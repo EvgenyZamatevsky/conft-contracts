@@ -8,6 +8,7 @@
     "@openzeppelin/contracts": "^5.0.0"
   },
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "check": "slither . --exclude-dependencies --filter-paths contracts/test"
   }
 }
