@@ -103,14 +103,14 @@ contract ListingsERC721 is Ownable(msg.sender) {
         // price check must be last because of Atlas IDE bug
         require(msg.value == listing.price, "Mismatch of funds");
 
+        emit TokenSold(listing.seller, msg.sender, contractAddress, tokenId, listing.price);
+
+        // clear listing
+        _clearListing(contractAddress, tokenId);
         // transfer tokens to buyer
         nftContract.safeTransferFrom(nftOwner, msg.sender, tokenId);
         // transfer money to seller
         payable(listing.seller).transfer(msg.value);
-        // clear listing
-        _clearListing(contractAddress, tokenId);
-
-        emit TokenSold(listing.seller, msg.sender, contractAddress, tokenId, listing.price);
     }
 
     function getListing(

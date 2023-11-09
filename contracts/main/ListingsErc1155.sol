@@ -109,14 +109,14 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         // price check must be last because of Atlas IDE bug
         require(msg.value == listing.price * listing.amount, "Mismatch of funds");
 
+        emit TokenSold(seller, msg.sender, contractAddress, tokenId, listing.amount, listing.price);
+
+        // clear listing
+        _clearListing(contractAddress, tokenId, seller);
         // transfer tokens to buyer
         nftContract.safeTransferFrom(seller, msg.sender, tokenId, listing.amount, "");
         // transfer money to seller
         payable(seller).transfer(msg.value);
-        // clear listing
-        _clearListing(contractAddress, tokenId, seller);
-
-        emit TokenSold(seller, msg.sender, contractAddress, tokenId, listing.amount, listing.price);
     }
 
     function getListing(
