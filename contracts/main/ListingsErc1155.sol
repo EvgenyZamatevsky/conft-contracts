@@ -93,7 +93,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         address contractAddress,
         uint256 tokenId,
         address seller
-    ) payable public {
+    ) public payable {
         Listing memory listing = _listings[contractAddress][tokenId][seller];
         require(listing.price > 0, "Listing does not exist");
         require(block.timestamp <= listing.expireTime, "Listing is expired");

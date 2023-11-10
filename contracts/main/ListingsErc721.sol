@@ -87,7 +87,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         );
     }
 
-    function buyToken(address contractAddress, uint256 tokenId) payable public {
+    function buyToken(address contractAddress, uint256 tokenId) public payable {
         Listing memory listing = _listings[contractAddress][tokenId];
         require(listing.price > 0, "Listing does not exist");
         require(block.timestamp <= listing.expireTime, "Listing is expired");

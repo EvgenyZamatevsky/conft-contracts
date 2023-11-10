@@ -2,6 +2,7 @@
   "name": "hardhat-project",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "ethlint": "^1.2.5",
     "hardhat": "^2.19.0"
   },
   "dependencies": {
@@ -9,6 +10,7 @@
   },
   "scripts": {
     "test": "npx hardhat test",
-    "check": "slither . --exclude-dependencies --filter-paths contracts/test"
+    "check": "slither . --exclude-dependencies --filter-paths contracts/test",
+    "lint": "./node_modules/ethlint/bin/solium.js -d contracts/main"
   }
 }
