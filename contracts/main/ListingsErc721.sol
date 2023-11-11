@@ -41,7 +41,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
     );
 
 
-    function withdraw() public onlyOwner {
+    function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
     }
 
@@ -50,7 +50,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         uint256 tokenId,
         uint256 price,
         uint256 durationHours
-    ) public {
+    ) external {
         require(price > 0, "Price must be > 0");
         require(durationHours > 0, "Duration must be > 0");
 
@@ -68,7 +68,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         emit ListingCreated(msg.sender, contractAddress, tokenId, price, expireTime);
     }
 
-    function cancelListing(address contractAddress, uint256 tokenId) public {
+    function cancelListing(address contractAddress, uint256 tokenId) external {
         Listing memory listing = _listings[contractAddress][tokenId];
         require(listing.price > 0, "Listing does not exist");
         require(listing.seller == msg.sender, "Caller is not the creator of the listing");
@@ -87,7 +87,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         );
     }
 
-    function buyToken(address contractAddress, uint256 tokenId) public payable {
+    function buyToken(address contractAddress, uint256 tokenId) external payable {
         Listing memory listing = _listings[contractAddress][tokenId];
         require(listing.price > 0, "Listing does not exist");
         require(block.timestamp <= listing.expireTime, "Listing is expired");
@@ -116,7 +116,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
     function getListing(
         address contractAddress,
         uint256 tokenId
-    ) public view returns (Listing memory) {
+    ) external view returns (Listing memory) {
         return _listings[contractAddress][tokenId];
     }
 
