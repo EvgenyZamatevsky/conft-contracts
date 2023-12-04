@@ -70,7 +70,14 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         uint256 expireTime = block.timestamp + (durationHours * SECONDS_IN_HOUR);
         _listings[contractAddress][tokenId][msg.sender] = Listing(amount, price, expireTime);
 
-        emit ListingCreated(msg.sender, contractAddress, tokenId, amount, price, expireTime);
+        emit ListingCreated(
+            msg.sender,
+            contractAddress,
+            tokenId,
+            amount,
+            price,
+            expireTime
+        );
     }
 
     function cancelListing(address contractAddress, uint256 tokenId) external {
@@ -109,7 +116,14 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         // price check must be last because of Atlas IDE bug
         require(msg.value == listing.price * listing.amount, "Mismatch of funds");
 
-        emit TokenSold(seller, msg.sender, contractAddress, tokenId, listing.amount, listing.price);
+        emit TokenSold(
+            seller,
+            msg.sender,
+            contractAddress,
+            tokenId,
+            listing.amount,
+            listing.price
+        );
 
         // clear listing
         _clearListing(contractAddress, tokenId, seller);
