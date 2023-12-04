@@ -51,9 +51,8 @@ describe("ListingsERC1155", () => {
   describe("AddListing", () => {
     describe("Validations", () => {
       it("Should revert with the right error if called with zero amount", async () => {
-        const { listings, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         const amount = 0;
 
         await expect(
@@ -64,9 +63,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if called with zero price", async () => {
-        const { listings, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         const price = 0;
 
         await expect(
@@ -77,9 +75,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if called with zero duration", async () => {
-        const { listings, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         const duration = 0;
 
         await expect(
@@ -90,9 +87,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if caller has 0 tokens", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
 
         await expect(
@@ -101,9 +97,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if caller has less tokens", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
 
@@ -177,9 +172,8 @@ describe("ListingsERC1155", () => {
   describe("CancelListing", () => {
     describe("Validations", () => {
       it("Should revert with the right error if there is no listing", async () => {
-        const { listings, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, secondAccount, tokens } =
+          await loadFixture(deployFixture);
 
         await expect(
           listings.connect(secondAccount).cancelListing(tokens.target, 0)
@@ -240,9 +234,8 @@ describe("ListingsERC1155", () => {
   describe("BuyToken", () => {
     describe("Validations", () => {
       it("Should revert with the right error if there is no listing", async () => {
-        const { listings, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, secondAccount, tokens } =
+          await loadFixture(deployFixture);
 
         await expect(
           listings
@@ -252,9 +245,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if listing is expired", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1);
@@ -301,9 +293,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if contract is not approved", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1);
@@ -319,9 +310,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should revert with the right error if funds mismatch with price", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 10, 1, 1);
@@ -334,9 +324,8 @@ describe("ListingsERC1155", () => {
       });
 
       it("Should not be reverted if listing exists and is called by the creator", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 10, 1, 1);
@@ -351,9 +340,8 @@ describe("ListingsERC1155", () => {
 
     describe("Events", () => {
       it("Should emit an TokenSold event", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 10, 1, 1);
@@ -377,9 +365,8 @@ describe("ListingsERC1155", () => {
 
     describe("Transfers", () => {
       it("Should transfer the tokens to the buyer", async () => {
-        const { listings, deployer, secondAccount, tokens } = await loadFixture(
-          deployFixture
-        );
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 10, 1, 1);
@@ -389,6 +376,27 @@ describe("ListingsERC1155", () => {
 
         expect(await tokens.balanceOf(deployer.address, 0)).to.equal(0);
         expect(await tokens.balanceOf(secondAccount.address, 0)).to.equal(10);
+      });
+
+      it("Removes listing from the state", async () => {
+        const { listings, deployer, secondAccount, tokens } =
+          await loadFixture(deployFixture);
+        await tokens.connect(deployer).mint(10);
+        await tokens.connect(deployer).setApprovalForAll(listings.target, true);
+        await listings.connect(deployer).addListing(tokens.target, 0, 10, 1, 1);
+        await listings
+          .connect(secondAccount)
+          .buyToken(tokens.target, 0, deployer.address, { value: 10 });
+
+        const [amount, price, expireTime] = await listings.getListing(
+          tokens.target,
+          0,
+          deployer.address
+        );
+
+        expect(amount).to.equal(0);
+        expect(price).to.equal(0);
+        expect(expireTime).to.equal(0);
       });
     });
   });
