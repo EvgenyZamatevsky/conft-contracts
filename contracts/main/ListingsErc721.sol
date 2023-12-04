@@ -6,6 +6,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract ListingsERC721 is Ownable(msg.sender) {
     struct Listing {
+        uint256 id;
         uint256 price;
         address seller;
         uint256 expireTime;
@@ -13,10 +14,13 @@ contract ListingsERC721 is Ownable(msg.sender) {
 
     // contractAddress => tokenId => Listing
     mapping(address => mapping(uint256 => Listing)) private _listings;
+    // count listing ids
+    uint256 private _idCounter = 1;
 
     uint constant SECONDS_IN_HOUR = 3600;
 
     event ListingCreated(
+        uint256 id,
         address seller,
         address contractAddress,
         uint256 tokenId,
@@ -25,6 +29,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
     );
 
     event ListingRemoved(
+        uint256 id,
         address seller,
         address contractAddress,
         uint256 tokenId,
@@ -33,6 +38,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
     );
 
     event TokenSold(
+        uint256 id,
         address seller,
         address buyer,
         address contractAddress,
@@ -62,16 +68,19 @@ contract ListingsERC721 is Ownable(msg.sender) {
         require(isApproved, "Contract is not approved");
 
         // add new listing
+        uint256 id = _idCounter;
         uint256 expireTime = block.timestamp + (durationHours * SECONDS_IN_HOUR);
-        _listings[contractAddress][tokenId] = Listing(price, msg.sender, expireTime);
+        _listings[contractAddress][tokenId] = Listing(id, price, msg.sender, expireTime);
 
         emit ListingCreated(
+            id,
             msg.sender,
             contractAddress,
             tokenId,
             price,
             expireTime
         );
+        ++_idCounter;
     }
 
     function cancelListing(address contractAddress, uint256 tokenId) external {
@@ -85,6 +94,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         _clearListing(contractAddress, tokenId);
 
         emit ListingRemoved(
+            listing.id,
             msg.sender,
             contractAddress,
             tokenId,
@@ -110,6 +120,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         require(msg.value == listing.price, "Mismatch of funds");
 
         emit TokenSold(
+            listing.id,
             listing.seller,
             msg.sender,
             contractAddress,
