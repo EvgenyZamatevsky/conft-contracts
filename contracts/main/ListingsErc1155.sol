@@ -6,6 +6,7 @@ import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
 contract ListingsERC1155 is Ownable(msg.sender) {
     struct Listing {
+        uint256 id;
         uint256 amount;
         uint256 price;
         uint256 expireTime;
@@ -13,10 +14,13 @@ contract ListingsERC1155 is Ownable(msg.sender) {
 
     // contractAddress => tokenId => seller => Listing
     mapping(address => mapping(uint256 => mapping(address => Listing))) private _listings;
+    // count listing ids
+    uint256 private _idCounter = 1;
 
     uint constant SECONDS_IN_HOUR = 3600;
 
     event ListingCreated(
+        uint256 id,
         address seller,
         address contractAddress,
         uint256 tokenId,
@@ -26,6 +30,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
     );
 
     event ListingRemoved(
+        uint256 id,
         address seller,
         address contractAddress,
         uint256 tokenId,
@@ -35,6 +40,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
     );
 
     event TokenSold(
+        uint256 id,
         address seller,
         address buyer,
         address contractAddress,
@@ -67,10 +73,12 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         require(isApproved, "Contract is not approved");
 
         // add new listing
+        uint256 id = _idCounter;
         uint256 expireTime = block.timestamp + (durationHours * SECONDS_IN_HOUR);
-        _listings[contractAddress][tokenId][msg.sender] = Listing(amount, price, expireTime);
+        _listings[contractAddress][tokenId][msg.sender] = Listing(id, amount, price, expireTime);
 
         emit ListingCreated(
+            id,
             msg.sender,
             contractAddress,
             tokenId,
@@ -78,6 +86,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
             price,
             expireTime
         );
+        ++_idCounter;
     }
 
     function cancelListing(address contractAddress, uint256 tokenId) external {
@@ -87,6 +96,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         _clearListing(contractAddress, tokenId, msg.sender);
 
         emit ListingRemoved(
+            listing.id,
             msg.sender,
             contractAddress,
             tokenId,
@@ -117,6 +127,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         require(msg.value == listing.price * listing.amount, "Mismatch of funds");
 
         emit TokenSold(
+            listing.id,
             seller,
             msg.sender,
             contractAddress,

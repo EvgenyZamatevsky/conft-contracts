@@ -142,6 +142,7 @@ describe("ListingsERC1155", () => {
         )
           .to.emit(listings, "ListingCreated")
           .withArgs(
+            1,
             deployer.address,
             tokens.target,
             0,
@@ -157,12 +158,13 @@ describe("ListingsERC1155", () => {
       await tokens.connect(deployer).mint(10);
       await tokens.connect(deployer).setApprovalForAll(listings.target, true);
       await listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1);
-      const [amount, price, expireTime] = await listings.getListing(
+      const [id, amount, price, expireTime] = await listings.getListing(
         tokens.target,
         0,
         deployer.address
       );
 
+      expect(id).to.equal(1);
       expect(amount).to.equal(1);
       expect(price).to.equal(1);
       expect(expireTime).to.equal((await time.latest()) + 1 * 3600);
@@ -203,6 +205,7 @@ describe("ListingsERC1155", () => {
         await expect(listings.connect(deployer).cancelListing(tokens.target, 0))
           .to.emit(listings, "ListingRemoved")
           .withArgs(
+            1,
             deployer.address,
             tokens.target,
             0,
@@ -219,12 +222,13 @@ describe("ListingsERC1155", () => {
       await tokens.connect(deployer).setApprovalForAll(listings.target, true);
       await listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1);
       await listings.connect(deployer).cancelListing(tokens.target, 0);
-      const [amount, price, expireTime] = await listings.getListing(
+      const [id, amount, price, expireTime] = await listings.getListing(
         tokens.target,
         0,
         deployer.address
       );
 
+      expect(id).to.equal(0);
       expect(amount).to.equal(0);
       expect(price).to.equal(0);
       expect(expireTime).to.equal(0);
@@ -250,7 +254,7 @@ describe("ListingsERC1155", () => {
         await tokens.connect(deployer).mint(10);
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         await listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1);
-        const [_price, _seller, expireTime] = await listings.getListing(
+        const [_id, _price, _seller, expireTime] = await listings.getListing(
           tokens.target,
           0,
           deployer.address
@@ -353,6 +357,7 @@ describe("ListingsERC1155", () => {
         )
           .to.emit(listings, "TokenSold")
           .withArgs(
+            1,
             deployer.address,
             secondAccount.address,
             tokens.target,
@@ -388,12 +393,13 @@ describe("ListingsERC1155", () => {
           .connect(secondAccount)
           .buyToken(tokens.target, 0, deployer.address, { value: 10 });
 
-        const [amount, price, expireTime] = await listings.getListing(
+        const [id, amount, price, expireTime] = await listings.getListing(
           tokens.target,
           0,
           deployer.address
         );
 
+        expect(id).to.equal(0);
         expect(amount).to.equal(0);
         expect(price).to.equal(0);
         expect(expireTime).to.equal(0);
