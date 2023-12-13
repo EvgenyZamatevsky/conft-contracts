@@ -13,6 +13,6 @@ module.exports = {
   },
   gasReporter: {
     enabled: true,
-    excludeContracts: ['/test']
-  }
+    excludeContracts: ["/test"],
+  },
 };
