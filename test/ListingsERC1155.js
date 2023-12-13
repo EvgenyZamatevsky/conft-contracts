@@ -1,7 +1,7 @@
 const {
   time,
   setBalance,
-  loadFixture
+  loadFixture,
 } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
@@ -30,7 +30,7 @@ describe("ListingsERC1155", () => {
         const { listings, secondAccount } = await loadFixture(deployFixture);
 
         await expect(
-          listings.connect(secondAccount).withdraw()
+          listings.connect(secondAccount).withdraw(),
         ).to.be.revertedWithCustomError(listings, "OwnableUnauthorizedAccount");
       });
     });
@@ -42,7 +42,7 @@ describe("ListingsERC1155", () => {
 
         await expect(listings.withdraw()).to.changeEtherBalances(
           [deployer, listings],
-          [123, -123]
+          [123, -123],
         );
       });
     });
@@ -58,7 +58,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .addListing(tokens.target, 0, amount, 1, 1)
+            .addListing(tokens.target, 0, amount, 1, 1),
         ).to.be.revertedWith("Amount must be > 0");
       });
 
@@ -70,7 +70,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .addListing(tokens.target, 0, 1, price, 1)
+            .addListing(tokens.target, 0, 1, price, 1),
         ).to.be.revertedWith("Price must be > 0");
       });
 
@@ -82,7 +82,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .addListing(tokens.target, 0, 1, 1, duration)
+            .addListing(tokens.target, 0, 1, 1, duration),
         ).to.be.revertedWith("Duration must be > 0");
       });
 
@@ -92,7 +92,7 @@ describe("ListingsERC1155", () => {
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
 
         await expect(
-          listings.connect(secondAccount).addListing(tokens.target, 0, 1, 1, 1)
+          listings.connect(secondAccount).addListing(tokens.target, 0, 1, 1, 1),
         ).to.be.revertedWith("Not enough tokens");
       });
 
@@ -105,7 +105,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .addListing(tokens.target, 0, 100, 1, 1)
+            .addListing(tokens.target, 0, 100, 1, 1),
         ).to.be.revertedWith("Not enough tokens");
       });
 
@@ -114,7 +114,7 @@ describe("ListingsERC1155", () => {
         await tokens.connect(deployer).mint(10);
 
         await expect(
-          listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1)
+          listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1),
         ).to.be.revertedWith("Contract is not approved");
       });
 
@@ -124,7 +124,7 @@ describe("ListingsERC1155", () => {
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
 
         await expect(
-          listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1)
+          listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1),
         ).not.to.be.reverted;
       });
     });
@@ -138,7 +138,7 @@ describe("ListingsERC1155", () => {
         await time.setNextBlockTimestamp(timestamp);
 
         await expect(
-          listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1)
+          listings.connect(deployer).addListing(tokens.target, 0, 1, 1, 1),
         )
           .to.emit(listings, "ListingCreated")
           .withArgs(
@@ -148,7 +148,7 @@ describe("ListingsERC1155", () => {
             0,
             1,
             1,
-            timestamp + 1 * 3600
+            timestamp + 1 * 3600,
           );
       });
     });
@@ -161,7 +161,7 @@ describe("ListingsERC1155", () => {
       const [id, amount, price, expireTime] = await listings.getListing(
         tokens.target,
         0,
-        deployer.address
+        deployer.address,
       );
 
       expect(id).to.equal(1);
@@ -178,7 +178,7 @@ describe("ListingsERC1155", () => {
           await loadFixture(deployFixture);
 
         await expect(
-          listings.connect(secondAccount).cancelListing(tokens.target, 0)
+          listings.connect(secondAccount).cancelListing(tokens.target, 0),
         ).to.be.revertedWith("Listing does not exist");
       });
 
@@ -211,7 +211,7 @@ describe("ListingsERC1155", () => {
             0,
             1,
             1,
-            timestamp + 1 * 3600
+            timestamp + 1 * 3600,
           );
       });
     });
@@ -225,7 +225,7 @@ describe("ListingsERC1155", () => {
       const [id, amount, price, expireTime] = await listings.getListing(
         tokens.target,
         0,
-        deployer.address
+        deployer.address,
       );
 
       expect(id).to.equal(0);
@@ -244,7 +244,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, secondAccount.address)
+            .buyToken(tokens.target, 0, secondAccount.address),
         ).to.be.revertedWith("Listing does not exist");
       });
 
@@ -257,14 +257,14 @@ describe("ListingsERC1155", () => {
         const [_id, _price, _seller, expireTime] = await listings.getListing(
           tokens.target,
           0,
-          deployer.address
+          deployer.address,
         );
         await time.increaseTo(expireTime);
 
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, deployer.address)
+            .buyToken(tokens.target, 0, deployer.address),
         ).to.be.revertedWith("Listing is expired");
       });
 
@@ -277,7 +277,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(deployer)
-            .buyToken(tokens.target, 0, deployer.address)
+            .buyToken(tokens.target, 0, deployer.address),
         ).to.be.revertedWith("Seller can not buy his tokens");
       });
 
@@ -292,7 +292,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(thirdAccount)
-            .buyToken(tokens.target, 0, deployer.address)
+            .buyToken(tokens.target, 0, deployer.address),
         ).to.be.revertedWith("Not enough tokens");
       });
 
@@ -309,7 +309,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, deployer.address)
+            .buyToken(tokens.target, 0, deployer.address),
         ).to.be.revertedWith("Contract is not approved");
       });
 
@@ -323,7 +323,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, deployer.address, { value: 1 })
+            .buyToken(tokens.target, 0, deployer.address, { value: 1 }),
         ).to.be.revertedWith("Mismatch of funds");
       });
 
@@ -337,7 +337,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, deployer.address, { value: 10 })
+            .buyToken(tokens.target, 0, deployer.address, { value: 10 }),
         ).not.to.be.reverted;
       });
     });
@@ -353,7 +353,7 @@ describe("ListingsERC1155", () => {
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, deployer.address, { value: 10 })
+            .buyToken(tokens.target, 0, deployer.address, { value: 10 }),
         )
           .to.emit(listings, "TokenSold")
           .withArgs(
@@ -363,7 +363,7 @@ describe("ListingsERC1155", () => {
             tokens.target,
             0,
             10,
-            1
+            1,
           );
       });
     });
@@ -396,7 +396,7 @@ describe("ListingsERC1155", () => {
         const [id, amount, price, expireTime] = await listings.getListing(
           tokens.target,
           0,
-          deployer.address
+          deployer.address,
         );
 
         expect(id).to.equal(0);
