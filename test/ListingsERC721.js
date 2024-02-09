@@ -22,6 +22,39 @@ describe("ListingsERC721", () => {
 
       expect(await listings.owner()).to.equal(deployer.address);
     });
+
+    it("Should set comission percentage to 0", async function () {
+      const { listings, deployer } = await loadFixture(deployFixture);
+
+      expect(await listings.comissionPercent()).to.equal(0);
+    });
+  });
+
+  describe("SetComissionPercent", () => {
+    describe("Validations", () => {
+      it("Should revert with the right error if called by not contract owner", async () => {
+        const { listings, secondAccount } = await loadFixture(deployFixture);
+
+        await expect(
+          listings.connect(secondAccount).setComissionPercent(0),
+        ).to.be.revertedWithCustomError(listings, "OwnableUnauthorizedAccount");
+      });
+
+      it("Should revert with the right error if percentage more than 99", async () => {
+        const { listings, deployer } = await loadFixture(deployFixture);
+
+        await expect(
+          listings.connect(deployer).setComissionPercent(100),
+        ).to.be.revertedWith("Comission percent must be less than 100");
+      });
+    });
+
+    it("Sets comission percentage", async () => {
+      const { listings, deployer } = await loadFixture(deployFixture);
+      const newPercentage = 90;
+      await listings.connect(deployer).setComissionPercent(newPercentage);
+      expect(await listings.comissionPercent()).to.equal(newPercentage);
+    });
   });
 
   describe("Withdraw", () => {

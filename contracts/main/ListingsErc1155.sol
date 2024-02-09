@@ -5,50 +5,61 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
 contract ListingsERC1155 is Ownable(msg.sender) {
+    // Using struct packing optimisation with two 256 bit slots:
+    // 1st slot: 256 bit = 128 bit id + 128 bit amount
+    // 2nd slot: 256 bit = 128 bit address + 128 bit expireTime
     struct Listing {
-        uint256 id;
-        uint256 amount;
-        uint256 price;
-        uint256 expireTime;
+        uint128 id;
+        uint128 amount;
+        uint128 price;
+        uint128 expireTime;
     }
+
+    uint96 constant SECONDS_IN_HOUR = 3600;
+
+    uint public comissionPercent = 0;
 
     // contractAddress => tokenId => seller => Listing
     mapping(address => mapping(uint256 => mapping(address => Listing))) private _listings;
     // count listing ids
-    uint256 private _idCounter = 1;
-
-    uint constant SECONDS_IN_HOUR = 3600;
+    uint128 private _idCounter = 1;
 
     event ListingCreated(
-        uint256 id,
+        uint128 id,
         address seller,
         address contractAddress,
         uint256 tokenId,
-        uint256 amount,
-        uint256 price,
-        uint256 expireTime
+        uint128 amount,
+        uint128 price,
+        uint128 expireTime
     );
 
     event ListingRemoved(
-        uint256 id,
+        uint128 id,
         address seller,
         address contractAddress,
         uint256 tokenId,
-        uint256 amount,
-        uint256 price,
-        uint256 expireTime
+        uint128 amount,
+        uint128 price,
+        uint128 expireTime
     );
 
     event TokenSold(
-        uint256 id,
+        uint128 id,
         address seller,
         address buyer,
         address contractAddress,
         uint256 tokenId,
-        uint256 amount,
-        uint256 price
+        uint128 amount,
+        uint128 price
     );
 
+
+    function setComissionPercent(uint256 percent) external onlyOwner {
+        require(percent < 100, "Comission percent must be less than 100");
+
+        comissionPercent = percent;
+    }
 
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
@@ -57,9 +68,9 @@ contract ListingsERC1155 is Ownable(msg.sender) {
     function addListing(
         address contractAddress,
         uint256 tokenId,
-        uint256 amount,
-        uint256 price,
-        uint256 durationHours
+        uint128 amount,
+        uint128 price,
+        uint16 durationHours
     ) external {
         require(amount > 0, "Amount must be > 0");
         require(price > 0, "Price must be > 0");
@@ -73,8 +84,8 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         require(isApproved, "Contract is not approved");
 
         // add new listing
-        uint256 id = _idCounter;
-        uint256 expireTime = block.timestamp + (durationHours * SECONDS_IN_HOUR);
+        uint128 id = _idCounter;
+        uint128 expireTime = uint128(block.timestamp + (durationHours * SECONDS_IN_HOUR));
         _listings[contractAddress][tokenId][msg.sender] = Listing(id, amount, price, expireTime);
 
         emit ListingCreated(
@@ -141,7 +152,9 @@ contract ListingsERC1155 is Ownable(msg.sender) {
         // transfer tokens to buyer
         nftContract.safeTransferFrom(seller, msg.sender, tokenId, listing.amount, "");
         // transfer money to seller
-        payable(seller).transfer(msg.value);
+        uint256 comission = msg.value * comissionPercent / 100;
+        uint256 valueWithoutComission = msg.value - comission;
+        payable(seller).transfer(valueWithoutComission);
     }
 
     function getListing(
