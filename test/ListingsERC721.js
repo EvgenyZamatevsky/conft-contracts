@@ -71,11 +71,12 @@ describe("ListingsERC721", () => {
     describe("Transfers", () => {
       it("Should transfer the funds to the contract owner", async () => {
         const { listings, deployer } = await loadFixture(deployFixture);
-        await setBalance(listings.target, 123);
+        const newBalance = 123;
+        await setBalance(listings.target, newBalance);
 
         await expect(listings.withdraw()).to.changeEtherBalances(
           [deployer, listings],
-          [123, -123],
+          [newBalance, -newBalance],
         );
       });
     });
@@ -86,24 +87,24 @@ describe("ListingsERC721", () => {
       it("Should revert with the right error if called with zero price", async () => {
         const { listings, secondAccount, tokens } =
           await loadFixture(deployFixture);
-        const price = 0;
+        const [tokenId, price, duration] = [0, 0, 0];
 
         await expect(
           listings
             .connect(secondAccount)
-            .addListing(tokens.target, 0, price, 0),
+            .addListing(tokens.target, tokenId, price, duration),
         ).to.be.revertedWith("Price must be > 0");
       });
 
       it("Should revert with the right error if called with zero duration", async () => {
         const { listings, secondAccount, tokens } =
           await loadFixture(deployFixture);
-        const duration = 0;
+        const [tokenId, price, duration] = [0, 1, 0];
 
         await expect(
           listings
             .connect(secondAccount)
-            .addListing(tokens.target, 0, 1, duration),
+            .addListing(tokens.target, tokenId, price, duration),
         ).to.be.revertedWith("Duration must be > 0");
       });
 
@@ -112,18 +113,24 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
+        const [tokenId, price, duration] = [0, 1, 1];
 
         await expect(
-          listings.connect(secondAccount).addListing(tokens.target, 0, 1, 1),
+          listings
+            .connect(secondAccount)
+            .addListing(tokens.target, tokenId, price, duration),
         ).to.be.revertedWith("Caller is not the owner");
       });
 
       it("Should revert with the right error if contract not approved", async () => {
         const { listings, deployer, tokens } = await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
+        const [tokenId, price, duration] = [0, 1, 1];
 
         await expect(
-          listings.connect(deployer).addListing(tokens.target, 0, 1, 1),
+          listings
+            .connect(deployer)
+            .addListing(tokens.target, tokenId, price, duration),
         ).to.be.revertedWith("Contract is not approved");
       });
 
@@ -131,9 +138,12 @@ describe("ListingsERC721", () => {
         const { listings, deployer, tokens } = await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
+        const [tokenId, price, duration] = [0, 1, 1];
 
         await expect(
-          listings.connect(deployer).addListing(tokens.target, 0, 1, 1),
+          listings
+            .connect(deployer)
+            .addListing(tokens.target, tokenId, price, duration),
         ).not.to.be.reverted;
       });
     });
@@ -145,18 +155,21 @@ describe("ListingsERC721", () => {
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         const timestamp = (await time.latest()) + 100_000;
         await time.setNextBlockTimestamp(timestamp);
+        const [tokenId, price, duration] = [0, 1, 1];
 
         await expect(
-          listings.connect(deployer).addListing(tokens.target, 0, 1, 1),
+          listings
+            .connect(deployer)
+            .addListing(tokens.target, tokenId, price, duration),
         )
           .to.emit(listings, "ListingCreated")
           .withArgs(
             1,
             deployer.address,
             tokens.target,
-            0,
-            1,
-            timestamp + 1 * 3600,
+            tokenId,
+            price,
+            timestamp + duration * 3600,
           );
       });
     });
@@ -165,16 +178,18 @@ describe("ListingsERC721", () => {
       const { listings, deployer, tokens } = await loadFixture(deployFixture);
       await tokens.connect(deployer).safeMint();
       await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-      await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
-      const [id, price, seller, expireTime] = await listings.getListing(
-        tokens.target,
-        0,
-      );
+      const [tokenId, price, duration] = [0, 1, 1];
+      await listings
+        .connect(deployer)
+        .addListing(tokens.target, tokenId, price, duration);
+      const listing = await listings.getListing(tokens.target, tokenId);
 
-      expect(id).to.equal(1);
-      expect(price).to.equal(1);
-      expect(seller).to.equal(deployer.address);
-      expect(expireTime).to.equal((await time.latest()) + 1 * 3600);
+      expect(listing.id).to.equal(1);
+      expect(listing.price).to.equal(price);
+      expect(listing.seller).to.equal(deployer.address);
+      expect(listing.expireTime).to.equal(
+        (await time.latest()) + duration * 3600,
+      );
     });
   });
 
@@ -183,9 +198,10 @@ describe("ListingsERC721", () => {
       it("Should revert with the right error if there is no listing", async () => {
         const { listings, secondAccount, tokens } =
           await loadFixture(deployFixture);
+        const tokenId = 0;
 
         await expect(
-          listings.connect(secondAccount).cancelListing(tokens.target, 0),
+          listings.connect(secondAccount).cancelListing(tokens.target, tokenId),
         ).to.be.revertedWith("Listing does not exist");
       });
 
@@ -194,10 +210,13 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
         await expect(
-          listings.connect(secondAccount).cancelListing(tokens.target, 0),
+          listings.connect(secondAccount).cancelListing(tokens.target, tokenId),
         ).to.be.revertedWith("Caller is not the creator of the listing");
       });
 
@@ -205,10 +224,14 @@ describe("ListingsERC721", () => {
         const { listings, deployer, tokens } = await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
-        await expect(listings.connect(deployer).cancelListing(tokens.target, 0))
-          .not.to.be.reverted;
+        await expect(
+          listings.connect(deployer).cancelListing(tokens.target, tokenId),
+        ).not.to.be.reverted;
       });
     });
 
@@ -219,17 +242,22 @@ describe("ListingsERC721", () => {
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
         const timestamp = (await time.latest()) + 100_000;
         await time.setNextBlockTimestamp(timestamp);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
-        await expect(listings.connect(deployer).cancelListing(tokens.target, 0))
+        await expect(
+          listings.connect(deployer).cancelListing(tokens.target, tokenId),
+        )
           .to.emit(listings, "ListingRemoved")
           .withArgs(
             1,
             deployer.address,
             tokens.target,
-            0,
-            1,
-            timestamp + 1 * 3600,
+            tokenId,
+            price,
+            timestamp + duration * 3600,
           );
       });
     });
@@ -238,17 +266,17 @@ describe("ListingsERC721", () => {
       const { listings, deployer, tokens } = await loadFixture(deployFixture);
       await tokens.connect(deployer).safeMint();
       await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-      await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
-      await listings.connect(deployer).cancelListing(tokens.target, 0);
-      const [id, price, seller, expireTime] = await listings.getListing(
-        tokens.target,
-        0,
-      );
+      const [tokenId, price, duration] = [0, 1, 1];
+      await listings
+        .connect(deployer)
+        .addListing(tokens.target, tokenId, price, duration);
+      await listings.connect(deployer).cancelListing(tokens.target, tokenId);
+      const listing = await listings.getListing(tokens.target, tokenId);
 
-      expect(id).to.equal(0);
-      expect(price).to.equal(0);
-      expect(seller).to.equal(ethers.ZeroAddress);
-      expect(expireTime).to.equal(0);
+      expect(listing.id).to.equal(0);
+      expect(listing.price).to.equal(0);
+      expect(listing.seller).to.equal(ethers.ZeroAddress);
+      expect(listing.expireTime).to.equal(0);
     });
   });
 
@@ -257,9 +285,10 @@ describe("ListingsERC721", () => {
       it("Should revert with the right error if there is no listing", async () => {
         const { listings, secondAccount, tokens } =
           await loadFixture(deployFixture);
+        const tokenId = 0;
 
         await expect(
-          listings.connect(secondAccount).buyToken(tokens.target, 0),
+          listings.connect(secondAccount).buyToken(tokens.target, tokenId),
         ).to.be.revertedWith("Listing does not exist");
       });
 
@@ -268,15 +297,15 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
-        const [_id, _price, _seller, expireTime] = await listings.getListing(
-          tokens.target,
-          0,
-        );
-        await time.increaseTo(expireTime);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
+        const listing = await listings.getListing(tokens.target, tokenId);
+        await time.increaseTo(listing.expireTime);
 
         await expect(
-          listings.connect(secondAccount).buyToken(tokens.target, 0),
+          listings.connect(secondAccount).buyToken(tokens.target, tokenId),
         ).to.be.revertedWith("Listing is expired");
       });
 
@@ -284,10 +313,13 @@ describe("ListingsERC721", () => {
         const { listings, deployer, tokens } = await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
         await expect(
-          listings.connect(deployer).buyToken(tokens.target, 0),
+          listings.connect(deployer).buyToken(tokens.target, tokenId),
         ).to.be.revertedWith("Seller can not buy his tokens");
       });
 
@@ -296,11 +328,14 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
-        await tokens.safeTransferFrom(deployer, secondAccount, 0);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
+        await tokens.safeTransferFrom(deployer, secondAccount, tokenId);
 
         await expect(
-          listings.connect(thirdAccount).buyToken(tokens.target, 0),
+          listings.connect(thirdAccount).buyToken(tokens.target, tokenId),
         ).to.be.revertedWith("Seller is not the owner");
       });
 
@@ -309,13 +344,16 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
         await tokens
           .connect(deployer)
           .setApprovalForAll(listings.target, false);
 
         await expect(
-          listings.connect(secondAccount).buyToken(tokens.target, 0),
+          listings.connect(secondAccount).buyToken(tokens.target, tokenId),
         ).to.be.revertedWith("Contract is not approved");
       });
 
@@ -324,12 +362,15 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, { value: 10 }),
+            .buyToken(tokens.target, tokenId, { value: 10 }),
         ).to.be.revertedWith("Mismatch of funds");
       });
 
@@ -338,12 +379,15 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, { value: 1 }),
+            .buyToken(tokens.target, tokenId, { value: price }),
         ).not.to.be.reverted;
       });
     });
@@ -354,12 +398,15 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
 
         await expect(
           listings
             .connect(secondAccount)
-            .buyToken(tokens.target, 0, { value: 1 }),
+            .buyToken(tokens.target, tokenId, { value: price }),
         )
           .to.emit(listings, "TokenSold")
           .withArgs(
@@ -367,8 +414,8 @@ describe("ListingsERC721", () => {
             deployer.address,
             secondAccount.address,
             tokens.target,
-            0,
-            1,
+            tokenId,
+            price,
           );
       });
     });
@@ -379,12 +426,15 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
         await listings
           .connect(secondAccount)
-          .buyToken(tokens.target, 0, { value: 1 });
+          .buyToken(tokens.target, tokenId, { value: price });
 
-        expect(await tokens.ownerOf(0)).to.equal(secondAccount.address);
+        expect(await tokens.ownerOf(tokenId)).to.equal(secondAccount.address);
       });
 
       it("Removes listing from the state", async () => {
@@ -392,20 +442,20 @@ describe("ListingsERC721", () => {
           await loadFixture(deployFixture);
         await tokens.connect(deployer).safeMint();
         await tokens.connect(deployer).setApprovalForAll(listings.target, true);
-        await listings.connect(deployer).addListing(tokens.target, 0, 1, 1);
+        const [tokenId, price, duration] = [0, 1, 1];
+        await listings
+          .connect(deployer)
+          .addListing(tokens.target, tokenId, price, duration);
         await listings
           .connect(secondAccount)
-          .buyToken(tokens.target, 0, { value: 1 });
+          .buyToken(tokens.target, tokenId, { value: price });
 
-        const [id, price, seller, expireTime] = await listings.getListing(
-          tokens.target,
-          0,
-        );
+        const listing = await listings.getListing(tokens.target, tokenId);
 
-        expect(id).to.equal(0);
-        expect(price).to.equal(0);
-        expect(seller).to.equal(ethers.ZeroAddress);
-        expect(expireTime).to.equal(0);
+        expect(listing.id).to.equal(0);
+        expect(listing.price).to.equal(0);
+        expect(listing.seller).to.equal(ethers.ZeroAddress);
+        expect(listing.expireTime).to.equal(0);
       });
     });
   });
