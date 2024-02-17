@@ -14,6 +14,10 @@ async function main() {
   const listingsErc1155 = await hre.ethers.deployContract("ListingsERC1155", [], {});
   await listingsErc1155.waitForDeployment();
   console.log(`ListingsERC1155 deployed to ${listingsErc1155.target}`);
+
+  const mint = await hre.ethers.deployContract("CoNFT", [], {});
+  await mint.waitForDeployment();
+  console.log(`CoNFT deployed to ${mint.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
