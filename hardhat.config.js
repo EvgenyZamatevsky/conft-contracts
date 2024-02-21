@@ -29,6 +29,11 @@ module.exports = {
       url: "https://sepolia.blast.io",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    rsktestnet: {
+      chainId: 31,
+      url: "https://public-node.testnet.rsk.co",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
