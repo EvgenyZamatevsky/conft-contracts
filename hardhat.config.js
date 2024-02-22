@@ -39,7 +39,8 @@ module.exports = {
     apiKey: {
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea_mainnet: process.env.LINEASCAN_API_KEY,
-      blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder
+      blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder,
+      rsktestnet: "abc",
     },
     customChains: [
       {
@@ -65,6 +66,14 @@ module.exports = {
           apiURL:
             "https://api.routescan.io/v2/network/testnet/evm/168587773/etherscan",
           browserURL: "https://testnet.blastscan.io",
+        },
+      },
+      {
+        network: "rsktestnet",
+        chainId: 31,
+        urls: {
+          apiURL: "https://rootstock-testnet.blockscout.com/api",
+          browserURL: "https://rootstock-testnet.blockscout.com",
         },
       },
     ],
