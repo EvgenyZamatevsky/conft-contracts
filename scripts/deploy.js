@@ -15,7 +15,7 @@ async function main() {
   await listingsErc1155.waitForDeployment();
   console.log(`ListingsERC1155 deployed to ${listingsErc1155.target}`);
 
-  const mint = await hre.ethers.deployContract("CoNFT", [], {});
+  const mint = await hre.ethers.deployContract("CoNFT", [0], {});
   await mint.waitForDeployment();
   console.log(`CoNFT deployed to ${mint.target}`);
 }
