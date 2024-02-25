@@ -18,8 +18,10 @@ contract CoNFT is ERC721Enumerable, Ownable(msg.sender) {
         require(msg.value >= mintPrice, "Insufficient funds");
 
         uint256 tokenId = totalSupply() + 1;
-        _safeMint(msg.sender, tokenId);
+
         emit Minted(msg.sender, tokenId);
+
+        _safeMint(msg.sender, tokenId);
     }
 
     function withdraw() external onlyOwner {
