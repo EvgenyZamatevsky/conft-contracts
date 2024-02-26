@@ -137,4 +137,19 @@ describe("CoNFT", () => {
       );
     });
   });
+
+  describe("TotalSupply", () => {
+    it("Returns 0 if there are no mints", async () => {
+      const { contract } = await loadFixture(deployFixture);
+
+      expect(await contract.totalSupply()).to.equal(0);
+    });
+
+    it("Returns 1 if there is 1 mint", async () => {
+      const { contract, mintPrice } = await loadFixture(deployFixture);
+      await contract.mint({ value: mintPrice });
+
+      expect(await contract.totalSupply()).to.equal(1);
+    });
+  });
 });
