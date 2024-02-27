@@ -17,7 +17,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
 
     uint96 constant SECONDS_IN_HOUR = 3600;
 
-    uint public comissionPercent = 0;
+    uint256 public comissionPercent;
 
     // contractAddress => tokenId => Listing
     mapping(address => mapping(uint256 => Listing)) private _listings;
@@ -53,7 +53,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
 
 
     function setComissionPercent(uint256 percent) external onlyOwner {
-        require(percent < 100, "Comission percent must be less than 100");
+        require(percent < 100, "Comission % must be < 100");
 
         comissionPercent = percent;
     }
@@ -97,7 +97,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
     function cancelListing(address contractAddress, uint256 tokenId) external {
         Listing memory listing = _listings[contractAddress][tokenId];
         require(listing.price > 0, "Listing does not exist");
-        require(listing.seller == msg.sender, "Caller is not the creator of the listing");
+        require(listing.seller == msg.sender, "Caller is not the seller");
 
         address nftOwner = IERC721(contractAddress).ownerOf(tokenId);
         require(nftOwner == msg.sender, "Caller is not the owner");

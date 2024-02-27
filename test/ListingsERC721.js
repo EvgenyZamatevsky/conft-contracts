@@ -45,7 +45,7 @@ describe("ListingsERC721", () => {
 
         await expect(
           listings.connect(deployer).setComissionPercent(100),
-        ).to.be.revertedWith("Comission percent must be less than 100");
+        ).to.be.revertedWith("Comission % must be < 100");
       });
     });
 
@@ -217,7 +217,7 @@ describe("ListingsERC721", () => {
 
         await expect(
           listings.connect(secondAccount).cancelListing(tokens.target, tokenId),
-        ).to.be.revertedWith("Caller is not the creator of the listing");
+        ).to.be.revertedWith("Caller is not the seller");
       });
 
       it("Should not be reverted if listing exists and is called by the creator", async () => {

@@ -45,7 +45,7 @@ describe("ListingsERC1155", () => {
 
         await expect(
           listings.connect(deployer).setComissionPercent(100),
-        ).to.be.revertedWith("Comission percent must be less than 100");
+        ).to.be.revertedWith("Comission % must be < 100");
       });
     });
 

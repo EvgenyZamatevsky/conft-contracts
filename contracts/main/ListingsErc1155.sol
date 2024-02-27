@@ -17,7 +17,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
 
     uint96 constant SECONDS_IN_HOUR = 3600;
 
-    uint public comissionPercent = 0;
+    uint256 public comissionPercent;
 
     // contractAddress => tokenId => seller => Listing
     mapping(address => mapping(uint256 => mapping(address => Listing))) private _listings;
@@ -56,7 +56,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
 
 
     function setComissionPercent(uint256 percent) external onlyOwner {
-        require(percent < 100, "Comission percent must be less than 100");
+        require(percent < 100, "Comission % must be < 100");
 
         comissionPercent = percent;
     }
