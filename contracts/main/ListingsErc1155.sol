@@ -124,7 +124,7 @@ contract ListingsERC1155 is Ownable(msg.sender) {
     ) external payable {
         Listing memory listing = _listings[contractAddress][tokenId][seller];
         require(listing.price > 0, "Listing does not exist");
-        require(block.timestamp <= listing.expireTime, "Listing is expired");
+        require(block.timestamp < listing.expireTime, "Listing is expired");
         require(msg.sender != seller, "Seller can not buy his tokens");
 
         IERC1155 nftContract = IERC1155(contractAddress);

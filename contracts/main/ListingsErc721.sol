@@ -117,7 +117,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
     function buyToken(address contractAddress, uint256 tokenId) external payable {
         Listing memory listing = _listings[contractAddress][tokenId];
         require(listing.price > 0, "Listing does not exist");
-        require(block.timestamp <= listing.expireTime, "Listing is expired");
+        require(block.timestamp < listing.expireTime, "Listing is expired");
         require(msg.sender != listing.seller, "Seller can not buy his tokens");
 
         IERC721 nftContract = IERC721(contractAddress);
