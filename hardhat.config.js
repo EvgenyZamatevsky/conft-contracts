@@ -34,6 +34,11 @@ module.exports = {
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    rootstock: {
+      chainId: 30,
+      url: "https://public-node.rsk.co",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
@@ -41,6 +46,7 @@ module.exports = {
       linea_mainnet: process.env.LINEASCAN_API_KEY,
       blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder,
       rsktestnet: "abc",
+      rootstock: "abc",
     },
     customChains: [
       {
@@ -74,6 +80,14 @@ module.exports = {
         urls: {
           apiURL: "https://rootstock-testnet.blockscout.com/api",
           browserURL: "https://rootstock-testnet.blockscout.com",
+        },
+      },
+      {
+        network: "rootstock",
+        chainId: 30,
+        urls: {
+          apiURL: "https://rootstock.blockscout.com/api",
+          browserURL: "https://rootstock.blockscout.com",
         },
       },
     ],
