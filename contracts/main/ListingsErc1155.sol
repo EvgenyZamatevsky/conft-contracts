@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
@@ -7,7 +7,7 @@ import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 contract ListingsERC1155 is Ownable(msg.sender) {
     // Using struct packing optimisation with two 256 bit slots:
     // 1st slot: 256 bit = 128 bit id + 128 bit amount
-    // 2nd slot: 256 bit = 128 bit address + 128 bit expireTime
+    // 2nd slot: 256 bit = 128 bit price + 128 bit expireTime
     struct Listing {
         uint128 id;
         uint128 amount;
