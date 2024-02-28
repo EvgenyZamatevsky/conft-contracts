@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract ListingsERC721 is Ownable(msg.sender) {
-    // Using struct packing optimisation with two 256 bit slots:
-    // 1st slot: 256 bit = 128 bit id + 128 bit price
-    // 2nd slot: 256 bit = 160 bit address + 96 bit expireTime
+    // Using struct packing optimization with two 256-bit slots:
+    // 1st slot: 256 bits = 128-bit id + 128-bit price
+    // 2nd slot: 256 bits = 160-bit address + 96-bit expireTime
     struct Listing {
         uint128 id;
         uint128 price;
@@ -15,19 +15,19 @@ contract ListingsERC721 is Ownable(msg.sender) {
         uint96 expireTime;
     }
 
-    // Required to calculate expiration time of a listing
+    // Required to calculate the expiration time of a listing
     uint96 constant SECONDS_IN_HOUR = 3600;
 
-    // Comission percent defines what part of transaction's value the contract
-    // keeps for itself. Can be adjusted with setComissionPercent function
-    uint256 public comissionPercent;
+    // Commission percent defines what part of the transaction's value the contract
+    // keeps for itself. Can be adjusted with setCommissionPercent function
+    uint256 public commissionPercent;
 
-    // The map keeps listings so we can instantly find one with getListing
+    // The map keeps listings, so we can instantly find one with getListing
     // externally or just via contract address and token id internally
     // contractAddress => tokenId => Listing
     mapping(address => mapping(uint256 => Listing)) private _listings;
 
-    // Track listing id so each listing can have unique number
+    // Track listing id, so each listing can have a unique number
     uint128 private _idCounter = 1;
 
     // Emits when a seller creates a new listing
@@ -40,7 +40,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         uint96 expireTime
     );
 
-    // Emits when a seller cancels its listing
+    // Emits when a seller cancels his listing
     event ListingRemoved(
         uint128 id,
         address seller,
@@ -60,13 +60,13 @@ contract ListingsERC721 is Ownable(msg.sender) {
         uint128 price
     );
 
-    // Changes comission percent for a purchase
-    // The higher the percentage, the larger part of transaction's value will be
+    // Changes commission percent for purchases
+    // The higher the percentage, the larger part of the transaction's value will be
     // kept by the contract. Can be changed only by the owner of the contract
-    function setComissionPercent(uint256 percent) external onlyOwner {
+    function setCommissionPercent(uint256 percent) external onlyOwner {
         require(percent < 100, "Comission % must be < 100");
 
-        comissionPercent = percent;
+        commissionPercent = percent;
     }
 
     // Transfers all the weis of the contract to the owner
@@ -109,7 +109,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
             price,
             expireTime
         );
-        // Increment the counter for next listing
+        // Increment the counter for the next listing
         ++_idCounter;
     }
 
@@ -145,7 +145,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         // Since free listings are forbidden, a found listing with 0 price
         // basically means that there is no such listing
         require(listing.price > 0, "Listing does not exist");
-        // Do not allow to buy a token via expired listing
+        // Do not allow buying a token via an expired listing
         require(block.timestamp < listing.expireTime, "Listing is expired");
         // Do not allow accounts to buy their own tokens
         require(msg.sender != listing.seller, "Seller can not buy his tokens");
@@ -159,7 +159,7 @@ contract ListingsERC721 is Ownable(msg.sender) {
         bool isApproved = nftContract.isApprovedForAll(nftOwner, address(this));
         require(isApproved, "Contract is not approved");
 
-        // Allow to buy with the price that seller wants
+        // Allow the buyer to buy at the price that the seller wants
         // price check must be the last because of Atlas IDE bug
         require(msg.value == listing.price, "Mismatch of funds");
 
@@ -176,14 +176,14 @@ contract ListingsERC721 is Ownable(msg.sender) {
         _clearListing(contractAddress, tokenId);
         // Transfer the token to the buyer
         nftContract.safeTransferFrom(nftOwner, msg.sender, tokenId);
-        // Calculate comission for this transaction
-        uint256 comission = msg.value * comissionPercent / 100;
-        uint256 valueWithoutComission = msg.value - comission;
+        // Calculate the commission for this transaction
+        uint256 commission = msg.value * commissionPercent / 100;
+        uint256 valueWithoutComission = msg.value - commission;
         // Transfer money to the seller
         payable(listing.seller).transfer(valueWithoutComission);
     }
 
-    // Instantly find a listing with contract address and token id
+    // Instantly find a listing with a contract address and token id
     function getListing(
         address contractAddress,
         uint256 tokenId

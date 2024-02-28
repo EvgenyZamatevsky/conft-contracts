@@ -23,10 +23,10 @@ describe("ListingsERC721", () => {
       expect(await listings.owner()).to.equal(deployer.address);
     });
 
-    it("Should set comission percentage to 0", async function () {
+    it("Should set commission percentage to 0", async function () {
       const { listings, deployer } = await loadFixture(deployFixture);
 
-      expect(await listings.comissionPercent()).to.equal(0);
+      expect(await listings.commissionPercent()).to.equal(0);
     });
   });
 
@@ -36,7 +36,7 @@ describe("ListingsERC721", () => {
         const { listings, secondAccount } = await loadFixture(deployFixture);
 
         await expect(
-          listings.connect(secondAccount).setComissionPercent(0),
+          listings.connect(secondAccount).setCommissionPercent(0),
         ).to.be.revertedWithCustomError(listings, "OwnableUnauthorizedAccount");
       });
 
@@ -44,16 +44,16 @@ describe("ListingsERC721", () => {
         const { listings, deployer } = await loadFixture(deployFixture);
 
         await expect(
-          listings.connect(deployer).setComissionPercent(100),
+          listings.connect(deployer).setCommissionPercent(100),
         ).to.be.revertedWith("Comission % must be < 100");
       });
     });
 
-    it("Sets comission percentage", async () => {
+    it("Sets commission percentage", async () => {
       const { listings, deployer } = await loadFixture(deployFixture);
       const newPercentage = 90;
-      await listings.connect(deployer).setComissionPercent(newPercentage);
-      expect(await listings.comissionPercent()).to.equal(newPercentage);
+      await listings.connect(deployer).setCommissionPercent(newPercentage);
+      expect(await listings.commissionPercent()).to.equal(newPercentage);
     });
   });
 
