@@ -1,13 +1,30 @@
-# Sample Hardhat Project
+# CoNFT Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project has contracts that are used by the CoNFT team. The contracts are located in `contracts/main`.
 
-Try running some of the following tasks:
+Some tasks you can use:
 
+- run tests
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+npm run test
+```
+
+- check for vulnerabilities (with slither)
+```shell
+npm run check
+```
+
+- check code quality (with ethlint)
+```shell
+npm run lint
+```
+
+- deploy the contracts
+```shell
+npx hardhat run scripts/deploy.js --network <networkname>
+```
+
+- verify the contracts
+```shell
+npx hardhat verify --network <networkname> <address> <args>
 ```
