@@ -11,13 +11,15 @@ describe("CoNFT", () => {
     const [deployer, secondAccount, thirdAccount] = await ethers.getSigners();
     const MintContract = await ethers.getContractFactory("CoNFT");
     const mintPrice = 123;
-    const contract = await MintContract.deploy(mintPrice);
+    const initialUriPrefix = "testurlprefix";
+    const contract = await MintContract.deploy(mintPrice, initialUriPrefix);
     return {
       contract,
       deployer,
       secondAccount,
       thirdAccount,
       mintPrice,
+      initialUriPrefix,
     };
   }
 
@@ -39,45 +41,11 @@ describe("CoNFT", () => {
 
       expect(await contract.mintPrice()).to.equal(mintPrice);
     });
-  });
 
-  describe("Mint", () => {
-    describe("Validations", () => {
-      it("Should revert with the right error if there are insufficient funds", async () => {
-        const { contract, secondAccount, mintPrice } =
-          await loadFixture(deployFixture);
+    it("Should set the right initial uri prefix", async () => {
+      const { contract, initialUriPrefix } = await loadFixture(deployFixture);
 
-        await expect(
-          contract.connect(secondAccount).mint({ value: mintPrice - 1 }),
-        ).to.be.revertedWith("Insufficient funds");
-      });
-    });
-
-    it("Increments token id counter", async () => {
-      const { contract, deployer, mintPrice } =
-        await loadFixture(deployFixture);
-      await contract.mint({ value: mintPrice });
-      const currentTokenId = Number(await contract.totalSupply());
-      expect(await contract.totalSupply()).to.equal(currentTokenId);
-    });
-
-    it("Correctly sets the owner of the token", async () => {
-      const { contract, deployer, mintPrice } =
-        await loadFixture(deployFixture);
-      await contract.mint({ value: mintPrice });
-      const currentTokenId = Number(await contract.totalSupply());
-      expect(await contract.ownerOf(currentTokenId)).to.equal(deployer.address);
-    });
-
-    describe("Events", () => {
-      it("Should emit an Minted event", async () => {
-        const { contract, deployer, mintPrice } =
-          await loadFixture(deployFixture);
-        const nextTokenId = Number(await contract.totalSupply()) + 1;
-        await expect(contract.mint({ value: mintPrice }))
-          .to.emit(contract, "Minted")
-          .withArgs(deployer.address, nextTokenId);
-      });
+      expect(await contract.tokenURI(1)).to.equal(initialUriPrefix + "1");
     });
   });
 
@@ -127,13 +95,75 @@ describe("CoNFT", () => {
     });
   });
 
+  describe("SetTokenUriPrefix", () => {
+    describe("Validations", () => {
+      it("Should revert with the right error if the caller is not the owner", async () => {
+        const { contract, secondAccount } = await loadFixture(deployFixture);
+
+        await expect(
+          contract.connect(secondAccount).setTokenUriPrefix('123'),
+        ).to.be.revertedWithCustomError(contract, "OwnableUnauthorizedAccount");
+      });
+    });
+
+    it("Sets mint price", async () => {
+      const { contract, deployer, initialUriPrefix } =
+        await loadFixture(deployFixture);
+      const newPrefix = "test123";
+      await contract.connect(deployer).setTokenUriPrefix(newPrefix);
+
+      expect(await contract.tokenURI(1)).to.equal(newPrefix + "1");
+    });
+  });
+
+  describe("Mint", () => {
+    describe("Validations", () => {
+      it("Should revert with the right error if there are insufficient funds", async () => {
+        const { contract, secondAccount, mintPrice } =
+          await loadFixture(deployFixture);
+
+        await expect(
+          contract.connect(secondAccount).mint({ value: mintPrice - 1 }),
+        ).to.be.revertedWith("Insufficient funds");
+      });
+    });
+
+    it("Increments token id counter", async () => {
+      const { contract, deployer, mintPrice } =
+        await loadFixture(deployFixture);
+      await contract.mint({ value: mintPrice });
+      const currentTokenId = Number(await contract.totalSupply());
+      expect(await contract.totalSupply()).to.equal(currentTokenId);
+    });
+
+    it("Correctly sets the owner of the token", async () => {
+      const { contract, deployer, mintPrice } =
+        await loadFixture(deployFixture);
+      await contract.mint({ value: mintPrice });
+      const currentTokenId = Number(await contract.totalSupply());
+      expect(await contract.ownerOf(currentTokenId)).to.equal(deployer.address);
+    });
+
+    describe("Events", () => {
+      it("Should emit an Minted event", async () => {
+        const { contract, deployer, mintPrice } =
+          await loadFixture(deployFixture);
+        const nextTokenId = Number(await contract.totalSupply()) + 1;
+        await expect(contract.mint({ value: mintPrice }))
+          .to.emit(contract, "Minted")
+          .withArgs(deployer.address, nextTokenId);
+      });
+    });
+  });
+
   describe("TokenURI", () => {
     it("Returns correct token uri", async () => {
-      const { contract, deployer } = await loadFixture(deployFixture);
+      const { contract, deployer, initialUriPrefix } =
+        await loadFixture(deployFixture);
       const tokenId = 1;
 
       expect(await contract.tokenURI(tokenId)).to.equal(
-        `https://conft.app/minting/eth/testnet/${tokenId}`,
+        `${initialUriPrefix}${tokenId}`,
       );
     });
   });

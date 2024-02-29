@@ -10,10 +10,25 @@ contract CoNFT is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
 
     uint256 public mintPrice;
 
+    string private _tokenUriPrefix;
+
     uint256 private _currentTokenId = 1;
 
-    constructor(uint256 initialMintPrice) {
+    constructor(uint256 initialMintPrice, string memory tokenUriPrefix) {
         mintPrice = initialMintPrice;
+        _tokenUriPrefix = tokenUriPrefix;
+    }
+
+    function withdraw() external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function setMintPrice(uint256 newPrice) external onlyOwner {
+        mintPrice = newPrice;
+    }
+
+    function setTokenUriPrefix(string memory newPrefix) external onlyOwner {
+        _tokenUriPrefix = newPrefix;
     }
 
     function mint() external payable {
@@ -28,16 +43,8 @@ contract CoNFT is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
         _safeMint(msg.sender, tokenId);
     }
 
-    function withdraw() external onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
-    }
-
-    function setMintPrice(uint256 newPrice) external onlyOwner {
-        mintPrice = newPrice;
-    }
-
-    function tokenURI(uint256 tokenId) public pure override returns (string memory) {
-        return string.concat("https://conft.app/minting/eth/testnet/", Strings.toString(tokenId));
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return string.concat(_tokenUriPrefix, Strings.toString(tokenId));
     }
 
     function totalSupply() external view returns (uint256) {
