@@ -7,17 +7,17 @@
 const hre = require("hardhat");
 
 async function main() {
-  const listingsErc721 = await hre.ethers.deployContract("ListingsERC721", [], {});
+  const listingsErc721 = await hre.ethers.deployContract("ListingsErc721", [], {});
   await listingsErc721.waitForDeployment();
-  console.log(`ListingsERC721 deployed to ${listingsErc721.target}`);
+  console.log(`ListingsErc721 deployed to ${listingsErc721.target}`);
 
-  const listingsErc1155 = await hre.ethers.deployContract("ListingsERC1155", [], {});
+  const listingsErc1155 = await hre.ethers.deployContract("ListingsErc1155", [], {});
   await listingsErc1155.waitForDeployment();
-  console.log(`ListingsERC1155 deployed to ${listingsErc1155.target}`);
+  console.log(`ListingsErc1155 deployed to ${listingsErc1155.target}`);
 
-  const mint = await hre.ethers.deployContract("CoNFT", [0], {});
+  const mint = await hre.ethers.deployContract("Mint", [0, ""], {});
   await mint.waitForDeployment();
-  console.log(`CoNFT deployed to ${mint.target}`);
+  console.log(`Mint deployed to ${mint.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

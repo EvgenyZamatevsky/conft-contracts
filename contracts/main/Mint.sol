@@ -5,14 +5,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract CoNFT is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
-    event Minted(address indexed to, uint256 indexed tokenId);
+using Strings for uint256;
 
+contract Mint is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
+    uint256 public maxSupply = 10_000;
     uint256 public mintPrice;
 
     string private _tokenUriPrefix;
+    uint256 private _currentTokenId;
 
-    uint256 private _currentTokenId = 1;
+    event Minted(address indexed to, uint256 indexed tokenId);
+    event MaxSupplyChanged(uint256 indexed newSupply);
+    event MintPriceChanged(uint256 indexed newPrice);
+    event TokenUriPrefixChanged(string indexed newPrefix);
 
     constructor(uint256 initialMintPrice, string memory tokenUriPrefix) {
         mintPrice = initialMintPrice;
@@ -20,23 +25,37 @@ contract CoNFT is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
     }
 
     function withdraw() external onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
+        (bool success, ) = payable(msg.sender).call{value: address(this).balance}("");
+        require(success, "Transfer failed");
+    }
+
+    function setMaxSupply(uint256 newMaxSupply) external onlyOwner {
+        emit MaxSupplyChanged(newMaxSupply);
+
+        maxSupply = newMaxSupply;
     }
 
     function setMintPrice(uint256 newPrice) external onlyOwner {
+        emit MintPriceChanged(newPrice);
+
         mintPrice = newPrice;
     }
 
     function setTokenUriPrefix(string memory newPrefix) external onlyOwner {
+        emit TokenUriPrefixChanged(newPrefix);
+
         _tokenUriPrefix = newPrefix;
     }
 
     function mint() external payable {
-        require(msg.value >= mintPrice, "Insufficient funds");
+        require(_currentTokenId < maxSupply, "Max supply reached");
+        require(msg.value == mintPrice, "Mismatch of funds");
 
         uint256 tokenId = _currentTokenId;
 
-        _currentTokenId++;
+        unchecked {
+            _currentTokenId = tokenId + 1;
+        }
 
         emit Minted(msg.sender, tokenId);
 
@@ -44,10 +63,10 @@ contract CoNFT is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        return string.concat(_tokenUriPrefix, Strings.toString(tokenId));
+        return string.concat(_tokenUriPrefix, tokenId.toString());
     }
 
     function totalSupply() external view returns (uint256) {
-        return _currentTokenId - 1;
+        return _currentTokenId;
     }
 }

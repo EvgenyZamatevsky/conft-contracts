@@ -17,6 +17,10 @@ module.exports = {
     excludeContracts: ["/test"],
   },
   networks: {
+    sepolia: {
+      url: "https://ethereum-sepolia-rpc.publicnode.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     linea_testnet: {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -29,6 +33,10 @@ module.exports = {
       url: "https://sepolia.blast.io",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    blast: {
+      url: "https://rpc.blast.io",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     rsktestnet: {
       chainId: 31,
       url: "https://public-node.testnet.rsk.co",
@@ -39,22 +47,38 @@ module.exports = {
       url: "https://public-node.rsk.co",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    taiko_katla_testnet: {
+      chainId: 167008,
+      url: "https://rpc.katla.taiko.xyz",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
+      sepolia: process.env.ETHERSCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea_mainnet: process.env.LINEASCAN_API_KEY,
       blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder,
-      rsktestnet: "abc",
-      rootstock: "abc",
+      blast: process.env.BLASTSCAN_API_KEY,
+      rsktestnet: "abc", // apiKey is not required, just set a placeholder,
+      rootstock: "abc", // apiKey is not required, just set a placeholder,
+      taiko_katla_testnet: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
+      {
+        network: "sepolia",
+        chainId: 11155111,
+        urls: {
+          apiURL: "https://api-sepolia.etherscan.io/api",
+          browserURL: "https://sepolia.etherscan.io",
+        },
+      },
       {
         network: "linea_testnet",
         chainId: 59140,
         urls: {
           apiURL: "https://api-testnet.lineascan.build/api",
-          browserURL: "https://goerli.lineascan.build/address",
+          browserURL: "https://goerli.lineascan.build/",
         },
       },
       {
@@ -75,6 +99,14 @@ module.exports = {
         },
       },
       {
+        network: "blast",
+        chainId: 81457,
+        urls: {
+          apiURL: "https://api.blastscan.io/api",
+          browserURL: "https://blastscan.io",
+        },
+      },
+      {
         network: "rsktestnet",
         chainId: 31,
         urls: {
@@ -87,6 +119,15 @@ module.exports = {
         chainId: 30,
         urls: {
           apiURL: "https://rootstock.blockscout.com/api",
+          browserURL: "https://rootstock.blockscout.com",
+        },
+      },
+      {
+        network: "taiko_katla_testnet",
+        chainId: 167008,
+        urls: {
+          apiURL:
+            "https://blockscoutapi.katla.taiko.xyz/api?module=contract&action=verify",
           browserURL: "https://rootstock.blockscout.com",
         },
       },

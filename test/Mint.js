@@ -6,10 +6,10 @@ const {
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 
-describe("CoNFT", () => {
+describe("Mint", () => {
   async function deployFixture() {
     const [deployer, secondAccount, thirdAccount] = await ethers.getSigners();
-    const MintContract = await ethers.getContractFactory("CoNFT");
+    const MintContract = await ethers.getContractFactory("Mint");
     const mintPrice = 123;
     const initialUriPrefix = "testurlprefix";
     const contract = await MintContract.deploy(mintPrice, initialUriPrefix);
@@ -34,6 +34,12 @@ describe("CoNFT", () => {
       const { contract } = await loadFixture(deployFixture);
 
       expect(await contract.totalSupply()).to.equal(0);
+    });
+
+    it("Should set the right max supply", async () => {
+      const { contract } = await loadFixture(deployFixture);
+
+      expect(await contract.maxSupply()).to.equal(10_000);
     });
 
     it("Should set the right mint price", async () => {
@@ -74,6 +80,37 @@ describe("CoNFT", () => {
     });
   });
 
+  describe("SetMaxSupply", () => {
+    describe("Validations", () => {
+      it("Should revert with the right error if the caller is not the owner", async () => {
+        const { contract, secondAccount } = await loadFixture(deployFixture);
+
+        await expect(
+          contract.connect(secondAccount).setMaxSupply(1),
+        ).to.be.revertedWithCustomError(contract, "OwnableUnauthorizedAccount");
+      });
+    });
+
+    describe("Events", () => {
+      it("Should emit an MaxSupplyChanged event", async () => {
+        const { contract, deployer } = await loadFixture(deployFixture);
+        const newMaxSupply = 10;
+
+        await expect(contract.connect(deployer).setMaxSupply(newMaxSupply))
+          .to.emit(contract, "MaxSupplyChanged")
+          .withArgs(newMaxSupply);
+      });
+    });
+
+    it("Sets max supply", async () => {
+      const { contract, deployer } = await loadFixture(deployFixture);
+      const newMaxSupply = 5;
+      await contract.connect(deployer).setMaxSupply(newMaxSupply);
+
+      expect(await contract.maxSupply()).to.equal(newMaxSupply);
+    });
+  });
+
   describe("SetMintPrice", () => {
     describe("Validations", () => {
       it("Should revert with the right error if the caller is not the owner", async () => {
@@ -82,6 +119,18 @@ describe("CoNFT", () => {
         await expect(
           contract.connect(secondAccount).setMintPrice(1),
         ).to.be.revertedWithCustomError(contract, "OwnableUnauthorizedAccount");
+      });
+    });
+
+    describe("Events", () => {
+      it("Should emit an MintPriceChanged event", async () => {
+        const { contract, deployer, mintPrice } =
+          await loadFixture(deployFixture);
+        const newPriceValue = 555;
+
+        await expect(contract.connect(deployer).setMintPrice(newPriceValue))
+          .to.emit(contract, "MintPriceChanged")
+          .withArgs(newPriceValue);
       });
     });
 
@@ -101,14 +150,24 @@ describe("CoNFT", () => {
         const { contract, secondAccount } = await loadFixture(deployFixture);
 
         await expect(
-          contract.connect(secondAccount).setTokenUriPrefix('123'),
+          contract.connect(secondAccount).setTokenUriPrefix("123"),
         ).to.be.revertedWithCustomError(contract, "OwnableUnauthorizedAccount");
       });
     });
 
+    describe("Events", () => {
+      it("Should emit an TokenUriPrefixChanged event", async () => {
+        const { contract, deployer } = await loadFixture(deployFixture);
+        const newPrefix = "test123";
+
+        await expect(contract.connect(deployer).setTokenUriPrefix(newPrefix))
+          .to.emit(contract, "TokenUriPrefixChanged")
+          .withArgs(newPrefix);
+      });
+    });
+
     it("Sets mint price", async () => {
-      const { contract, deployer, initialUriPrefix } =
-        await loadFixture(deployFixture);
+      const { contract, deployer } = await loadFixture(deployFixture);
       const newPrefix = "test123";
       await contract.connect(deployer).setTokenUriPrefix(newPrefix);
 
@@ -118,13 +177,33 @@ describe("CoNFT", () => {
 
   describe("Mint", () => {
     describe("Validations", () => {
-      it("Should revert with the right error if there are insufficient funds", async () => {
+      it("Should revert with the right error if the max supply has been reached", async () => {
+        const { contract, secondAccount, mintPrice } =
+          await loadFixture(deployFixture);
+        await contract.setMaxSupply(1);
+        await contract.connect(secondAccount).mint({ value: mintPrice });
+
+        await expect(
+          contract.connect(secondAccount).mint({ value: mintPrice }),
+        ).to.be.revertedWith("Max supply reached");
+      });
+
+      it("Should revert with the right error if minter underpays", async () => {
         const { contract, secondAccount, mintPrice } =
           await loadFixture(deployFixture);
 
         await expect(
           contract.connect(secondAccount).mint({ value: mintPrice - 1 }),
-        ).to.be.revertedWith("Insufficient funds");
+        ).to.be.revertedWith("Mismatch of funds");
+      });
+
+      it("Should revert with the right error if minter overpays", async () => {
+        const { contract, secondAccount, mintPrice } =
+          await loadFixture(deployFixture);
+
+        await expect(
+          contract.connect(secondAccount).mint({ value: mintPrice + 1 }),
+        ).to.be.revertedWith("Mismatch of funds");
       });
     });
 
@@ -140,7 +219,7 @@ describe("CoNFT", () => {
       const { contract, deployer, mintPrice } =
         await loadFixture(deployFixture);
       await contract.mint({ value: mintPrice });
-      const currentTokenId = Number(await contract.totalSupply());
+      const currentTokenId = Number(await contract.totalSupply()) - 1;
       expect(await contract.ownerOf(currentTokenId)).to.equal(deployer.address);
     });
 
@@ -148,7 +227,7 @@ describe("CoNFT", () => {
       it("Should emit an Minted event", async () => {
         const { contract, deployer, mintPrice } =
           await loadFixture(deployFixture);
-        const nextTokenId = Number(await contract.totalSupply()) + 1;
+        const nextTokenId = Number(await contract.totalSupply());
         await expect(contract.mint({ value: mintPrice }))
           .to.emit(contract, "Minted")
           .withArgs(deployer.address, nextTokenId);
