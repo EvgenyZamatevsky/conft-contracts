@@ -52,6 +52,16 @@ module.exports = {
       url: "https://rpc.katla.taiko.xyz",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    xlayer_testnet: {
+      chainId: 195,
+      url: "https://testrpc.xlayer.tech",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    xlayer: {
+      chainId: 196,
+      url: "https://rpc.xlayer.tech",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
@@ -63,6 +73,8 @@ module.exports = {
       rsktestnet: "abc", // apiKey is not required, just set a placeholder,
       rootstock: "abc", // apiKey is not required, just set a placeholder,
       taiko_katla_testnet: "abc", // apiKey is not required, just set a placeholder,
+      xlayer_testnet: process.env.XLAYER_API_KEY,
+      xlayer: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
       {
@@ -129,6 +141,23 @@ module.exports = {
           apiURL:
             "https://blockscoutapi.katla.taiko.xyz/api?module=contract&action=verify",
           browserURL: "https://rootstock.blockscout.com",
+        },
+      },
+      {
+        network: "xlayer_testnet",
+        chainId: 195,
+        urls: {
+          apiURL:
+            "https://www.oklink.com/api/explorer/v1/contract/verify/async/api/xlayer_test",
+          browserURL: "https://www.oklink.com/xlayer-test",
+        },
+      },
+      {
+        network: "xlayer",
+        chainId: 196,
+        urls: {
+          apiURL: "https://www.okx.com/explorer/xlayer/api",
+          browserURL: "https://www.okx.com/explorer/xlayer",
         },
       },
     ],
