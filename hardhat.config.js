@@ -140,7 +140,7 @@ module.exports = {
         urls: {
           apiURL:
             "https://blockscoutapi.katla.taiko.xyz/api?module=contract&action=verify",
-          browserURL: "https://rootstock.blockscout.com",
+          browserURL: "https://explorer.katla.taiko.xyz",
         },
       },
       {
