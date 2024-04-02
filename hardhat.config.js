@@ -74,7 +74,7 @@ module.exports = {
       rootstock: "abc", // apiKey is not required, just set a placeholder,
       taiko_katla_testnet: "abc", // apiKey is not required, just set a placeholder,
       xlayer_testnet: process.env.XLAYER_API_KEY,
-      xlayer: "abc", // apiKey is not required, just set a placeholder,
+      xlayer: process.env.XLAYER_API_KEY,
     },
     customChains: [
       {
@@ -156,7 +156,8 @@ module.exports = {
         network: "xlayer",
         chainId: 196,
         urls: {
-          apiURL: "https://www.okx.com/explorer/xlayer/api",
+          apiURL:
+            "https://www.oklink.com/api/explorer/v1/contract/verify/async/api/xlayer",
           browserURL: "https://www.okx.com/explorer/xlayer",
         },
       },
