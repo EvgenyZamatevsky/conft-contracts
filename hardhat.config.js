@@ -25,7 +25,7 @@ module.exports = {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
-    linea_mainnet: {
+    linea: {
       url: `https://rpc.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
@@ -37,7 +37,7 @@ module.exports = {
       url: "https://rpc.blast.io",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
-    rsktestnet: {
+    rootstock_testnet: {
       chainId: 31,
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -62,19 +62,29 @@ module.exports = {
       url: "https://rpc.xlayer.tech",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    base_sepolia: {
+      url: "https://base-sepolia-rpc.publicnode.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    base: {
+      url: "https://base-rpc.publicnode.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
       sepolia: process.env.ETHERSCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
-      linea_mainnet: process.env.LINEASCAN_API_KEY,
+      linea: process.env.LINEASCAN_API_KEY,
       blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder,
       blast: process.env.BLASTSCAN_API_KEY,
-      rsktestnet: "abc", // apiKey is not required, just set a placeholder,
+      rootstock_testnet: "abc", // apiKey is not required, just set a placeholder,
       rootstock: "abc", // apiKey is not required, just set a placeholder,
       taiko_katla_testnet: "abc", // apiKey is not required, just set a placeholder,
       xlayer_testnet: process.env.XLAYER_API_KEY,
       xlayer: process.env.XLAYER_API_KEY,
+      base_sepolia: process.env.BASESCAN_API_KEY,
+      base: process.env.BASESCAN_API_KEY,
     },
     customChains: [
       {
@@ -94,7 +104,7 @@ module.exports = {
         },
       },
       {
-        network: "linea_mainnet",
+        network: "linea",
         chainId: 59144,
         urls: {
           apiURL: "https://api.lineascan.build/api",
@@ -119,7 +129,7 @@ module.exports = {
         },
       },
       {
-        network: "rsktestnet",
+        network: "rootstock_testnet",
         chainId: 31,
         urls: {
           apiURL: "https://rootstock-testnet.blockscout.com/api",
@@ -159,6 +169,22 @@ module.exports = {
           apiURL:
             "https://www.oklink.com/api/explorer/v1/contract/verify/async/api/xlayer",
           browserURL: "https://www.okx.com/explorer/xlayer",
+        },
+      },
+      {
+        network: "base_sepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org",
+        },
+      },
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org",
         },
       },
     ],
