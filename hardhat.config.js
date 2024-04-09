@@ -70,6 +70,10 @@ module.exports = {
       url: "https://base-rpc.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    scroll: {
+      url: "https://rpc.scroll.io",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
@@ -85,6 +89,7 @@ module.exports = {
       xlayer: process.env.XLAYER_API_KEY,
       base_sepolia: process.env.BASESCAN_API_KEY,
       base: process.env.BASESCAN_API_KEY,
+      scroll: process.env.SCROLLSCAN_API_KEY,
     },
     customChains: [
       {
@@ -185,6 +190,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.basescan.org/api",
           browserURL: "https://basescan.org",
+        },
+      },
+      {
+        network: "scroll",
+        chainId: 534352,
+        urls: {
+          apiURL: "https://api.scrollscan.com/api",
+          browserURL: "https://scrollscan.com",
         },
       },
     ],
