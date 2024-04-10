@@ -74,6 +74,10 @@ module.exports = {
       url: "https://rpc.scroll.io",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    artela_testnet: {
+      url: "https://betanet-rpc1.artela.network",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    }
   },
   etherscan: {
     apiKey: {
@@ -90,6 +94,7 @@ module.exports = {
       base_sepolia: process.env.BASESCAN_API_KEY,
       base: process.env.BASESCAN_API_KEY,
       scroll: process.env.SCROLLSCAN_API_KEY,
+      artela_testnet: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
       {
@@ -198,6 +203,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.scrollscan.com/api",
           browserURL: "https://scrollscan.com",
+        },
+      },
+      {
+        network: "artela_testnet",
+        chainId: 11822,
+        urls: {
+          apiURL: "https://betanet-scan.artela.network/api",
+          browserURL: "https://betanet-scan.artela.network",
         },
       },
     ],
