@@ -74,6 +74,10 @@ module.exports = {
       url: "https://rpc.scroll.io",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    mode: {
+      url: "https://1rpc.io/mode",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     artela_testnet: {
       url: "https://betanet-rpc1.artela.network",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -94,6 +98,7 @@ module.exports = {
       base_sepolia: process.env.BASESCAN_API_KEY,
       base: process.env.BASESCAN_API_KEY,
       scroll: process.env.SCROLLSCAN_API_KEY,
+      mode: "abc", // apiKey is not required, just set a placeholder,
       artela_testnet: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
@@ -203,6 +208,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.scrollscan.com/api",
           browserURL: "https://scrollscan.com",
+        },
+      },
+      {
+        network: "mode",
+        chainId: 34443,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/34443/etherscan",
+          browserURL: "https://modescan.io",
         },
       },
       {
