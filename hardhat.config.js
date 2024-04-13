@@ -81,7 +81,19 @@ module.exports = {
     artela_testnet: {
       url: "https://betanet-rpc1.artela.network",
       accounts: [process.env.WALLET_PRIVATE_KEY],
-    }
+    },
+    zora: {
+      url: "https://rpc.zora.energy",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    ancient8: {
+      url: "https://rpc.ancient8.gg",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    nova: {
+      url: "https://arbitrum-nova.publicnode.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
@@ -100,6 +112,9 @@ module.exports = {
       scroll: process.env.SCROLLSCAN_API_KEY,
       mode: "abc", // apiKey is not required, just set a placeholder,
       artela_testnet: "abc", // apiKey is not required, just set a placeholder,
+      zora: "abc", // apiKey is not required, just set a placeholder,
+      ancient8: "abc", // apiKey is not required, just set a placeholder,
+      nova: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
       {
@@ -214,7 +229,8 @@ module.exports = {
         network: "mode",
         chainId: 34443,
         urls: {
-          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/34443/etherscan",
+          apiURL:
+            "https://api.routescan.io/v2/network/mainnet/evm/34443/etherscan",
           browserURL: "https://modescan.io",
         },
       },
@@ -224,6 +240,30 @@ module.exports = {
         urls: {
           apiURL: "https://betanet-scan.artela.network/api",
           browserURL: "https://betanet-scan.artela.network",
+        },
+      },
+      {
+        network: "zora",
+        chainId: 7777777,
+        urls: {
+          apiURL: "https://explorer.zora.energy/api",
+          browserURL: "https://explorer.zora.energy",
+        },
+      },
+      {
+        network: "ancient8",
+        chainId: 888888888,
+        urls: {
+          apiURL: "https://scan.ancient8.gg/api",
+          browserURL: "https://scan.ancient8.gg",
+        },
+      },
+      {
+        network: "nova",
+        chainId: 42170,
+        urls: {
+          apiURL: "https://nova-explorer.arbitrum.io/api",
+          browserURL: "https://nova-explorer.arbitrum.io",
         },
       },
     ],
