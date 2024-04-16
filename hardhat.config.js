@@ -94,6 +94,10 @@ module.exports = {
       url: "https://arbitrum-nova.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    bob: {
+      url: "https://rpc.gobob.xyz",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
@@ -115,6 +119,7 @@ module.exports = {
       zora: "abc", // apiKey is not required, just set a placeholder,
       ancient8: "abc", // apiKey is not required, just set a placeholder,
       nova: "abc", // apiKey is not required, just set a placeholder,
+      bob: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
       {
@@ -264,6 +269,14 @@ module.exports = {
         urls: {
           apiURL: "https://nova-explorer.arbitrum.io/api",
           browserURL: "https://nova-explorer.arbitrum.io",
+        },
+      },
+      {
+        network: "bob",
+        chainId: 60808,
+        urls: {
+          apiURL: "https://explorer.gobob.xyz/api",
+          browserURL: "https://explorer.gobob.xyz",
         },
       },
     ],
