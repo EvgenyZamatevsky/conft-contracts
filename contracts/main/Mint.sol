@@ -7,19 +7,31 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 using Strings for uint256;
 
-contract Mint is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
-    uint256 public maxSupply = 10_000;
+contract Mint is ERC721, Ownable {
+    uint256 public maxSupply;
     uint256 public mintPrice;
 
     string private _tokenUriPrefix;
     uint256 private _currentTokenId;
 
-    event Minted(address indexed to, uint256 indexed tokenId);
+    event Minted(
+        address indexed to,
+        uint256 indexed tokenId,
+        uint256 price,
+        uint256 timestamp
+    );
     event MaxSupplyChanged(uint256 indexed newSupply);
     event MintPriceChanged(uint256 indexed newPrice);
     event TokenUriPrefixChanged(string indexed newPrefix);
 
-    constructor(uint256 initialMintPrice, string memory tokenUriPrefix) {
+    constructor(
+        string memory tokenName,
+        string memory tokenSymbol,
+        string memory tokenUriPrefix,
+        uint256 initialMaxSupply,
+        uint256 initialMintPrice
+    ) ERC721(tokenName, tokenSymbol) Ownable(msg.sender) {
+        maxSupply = initialMaxSupply;
         mintPrice = initialMintPrice;
         _tokenUriPrefix = tokenUriPrefix;
     }
@@ -57,7 +69,7 @@ contract Mint is ERC721("coNFT", "CNFT"), Ownable(msg.sender) {
             _currentTokenId = tokenId + 1;
         }
 
-        emit Minted(msg.sender, tokenId);
+        emit Minted(msg.sender, tokenId, mintPrice, block.timestamp);
 
         _safeMint(msg.sender, tokenId);
     }

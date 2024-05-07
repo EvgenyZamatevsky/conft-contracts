@@ -15,7 +15,7 @@ async function main() {
   await listingsErc1155.waitForDeployment();
   console.log(`ListingsErc1155 deployed to ${listingsErc1155.target}`);
 
-  const mint = await hre.ethers.deployContract("Mint", [0, ""], {});
+  const mint = await hre.ethers.deployContract("Mint", ["", "", "", 0, 0], {});
   await mint.waitForDeployment();
   console.log(`Mint deployed to ${mint.target}`);
 }

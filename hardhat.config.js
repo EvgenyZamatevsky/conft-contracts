@@ -98,6 +98,14 @@ module.exports = {
       url: "https://rpc.gobob.xyz",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    kakarot_testnet: {
+      url: "https://sepolia-rpc.kakarot.org",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    bera_testnet: {
+      url: "https://artio.rpc.berachain.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
@@ -120,6 +128,8 @@ module.exports = {
       ancient8: "abc", // apiKey is not required, just set a placeholder,
       nova: "abc", // apiKey is not required, just set a placeholder,
       bob: "abc", // apiKey is not required, just set a placeholder,
+      kakarot_testnet: "abc", // apiKey is not required, just set a placeholder,
+      bera_testnet: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
       {
@@ -277,6 +287,22 @@ module.exports = {
         urls: {
           apiURL: "https://explorer.gobob.xyz/api",
           browserURL: "https://explorer.gobob.xyz",
+        },
+      },
+      {
+        network: "kakarot_testnet",
+        chainId: 1802203764,
+        urls: {
+          apiURL: "https://sepolia-explorer.kakarot.org/api",
+          browserURL: "https://sepolia-explorer.kakarot.org",
+        },
+      },
+      {
+        network: "bera_testnet",
+        chainId: 80085,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/testnet/evm/80085/etherscan",
+          browserURL: "https://artio.beratrail.io",
         },
       },
     ],

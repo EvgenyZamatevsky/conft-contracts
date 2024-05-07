@@ -10,20 +10,30 @@ describe("Mint", () => {
   async function deployFixture() {
     const [deployer, secondAccount, thirdAccount] = await ethers.getSigners();
     const MintContract = await ethers.getContractFactory("Mint");
-    const mintPrice = 123;
-    const initialUriPrefix = "testurlprefix";
-    const contract = await MintContract.deploy(mintPrice, initialUriPrefix);
-    return {
-      contract,
-      deployer,
-      secondAccount,
-      thirdAccount,
-      mintPrice,
-      initialUriPrefix,
+    const initData = {
+      name: "name",
+      symbol: "symbol",
+      initialUriPrefix: "testurlprefix",
+      maxSupply: 1000,
+      mintPrice: 123,
     };
+    const contract = await MintContract.deploy(...Object.values(initData));
+    return { contract, deployer, secondAccount, thirdAccount, ...initData };
   }
 
   describe("Deployment", () => {
+    it("Should set the right collection name", async () => {
+      const { contract, deployer, name } = await loadFixture(deployFixture);
+
+      expect(await contract.name()).to.equal(name);
+    });
+
+    it("Should set the right symbol", async () => {
+      const { contract, deployer, symbol } = await loadFixture(deployFixture);
+
+      expect(await contract.symbol()).to.equal(symbol);
+    });
+
     it("Should set the right contract owner", async () => {
       const { contract, deployer } = await loadFixture(deployFixture);
 
@@ -37,9 +47,9 @@ describe("Mint", () => {
     });
 
     it("Should set the right max supply", async () => {
-      const { contract } = await loadFixture(deployFixture);
+      const { contract, maxSupply } = await loadFixture(deployFixture);
 
-      expect(await contract.maxSupply()).to.equal(10_000);
+      expect(await contract.maxSupply()).to.equal(maxSupply);
     });
 
     it("Should set the right mint price", async () => {
@@ -225,12 +235,14 @@ describe("Mint", () => {
 
     describe("Events", () => {
       it("Should emit an Minted event", async () => {
-        const { contract, deployer, mintPrice } =
+        const { contract, deployer, maxSupply, mintPrice } =
           await loadFixture(deployFixture);
         const nextTokenId = Number(await contract.totalSupply());
+        const timestamp = (await time.latest()) + 100_000;
+        await time.setNextBlockTimestamp(timestamp);
         await expect(contract.mint({ value: mintPrice }))
           .to.emit(contract, "Minted")
-          .withArgs(deployer.address, nextTokenId);
+          .withArgs(deployer.address, nextTokenId, mintPrice, timestamp);
       });
     });
   });
