@@ -33,6 +33,10 @@ module.exports = {
       url: "https://optimism.drpc.org",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    bsc: {
+      url: "https://1rpc.io/bnb",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     linea_testnet: {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -125,6 +129,7 @@ module.exports = {
       sepolia: process.env.ETHERSCAN_API_KEY,
       arbitrum: process.env.ARBISCAN_API_KEY,
       optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+      bsc: process.env.BSCSCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea: process.env.LINEASCAN_API_KEY,
       blast_sepolia: "abc", // apiKey is not required, just set a placeholder,
@@ -177,6 +182,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-optimistic.etherscan.io/api",
           browserURL: "https://optimistic.etherscan.io",
+        },
+      },
+      {
+        network: "bsc",
+        chainId: 56,
+        urls: {
+          apiURL: "https://api.bscscan.com/api",
+          browserURL: "https://bscscan.com",
         },
       },
       {
