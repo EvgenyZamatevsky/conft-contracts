@@ -17,6 +17,10 @@ module.exports = {
     excludeContracts: ["/test"],
   },
   networks: {
+    ethereum: {
+      url: "https://1rpc.io/eth",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     sepolia: {
       url: "https://ethereum-sepolia-rpc.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -109,6 +113,7 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
+      ethereum: process.env.ETHERSCAN_API_KEY,
       sepolia: process.env.ETHERSCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea: process.env.LINEASCAN_API_KEY,
@@ -132,6 +137,14 @@ module.exports = {
       bera_testnet: "abc", // apiKey is not required, just set a placeholder,
     },
     customChains: [
+      {
+        network: "ethereum",
+        chainId: 1,
+        urls: {
+          apiURL: "https://api.etherscan.io/api",
+          browserURL: "https://etherscan.io",
+        },
+      },
       {
         network: "sepolia",
         chainId: 11155111,
@@ -301,7 +314,8 @@ module.exports = {
         network: "bera_testnet",
         chainId: 80085,
         urls: {
-          apiURL: "https://api.routescan.io/v2/network/testnet/evm/80085/etherscan",
+          apiURL:
+            "https://api.routescan.io/v2/network/testnet/evm/80085/etherscan",
           browserURL: "https://artio.beratrail.io",
         },
       },
