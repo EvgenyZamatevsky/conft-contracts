@@ -25,6 +25,10 @@ module.exports = {
       url: "https://ethereum-sepolia-rpc.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    arbitrum: {
+      url: "https://arbitrum-one-rpc.publicnode.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     linea_testnet: {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -115,9 +119,10 @@ module.exports = {
     apiKey: {
       ethereum: process.env.ETHERSCAN_API_KEY,
       sepolia: process.env.ETHERSCAN_API_KEY,
+      arbitrum: process.env.ARBISCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea: process.env.LINEASCAN_API_KEY,
-      blast_sepolia: "blast_sepolia", // apiKey is not required, just set a placeholder,
+      blast_sepolia: "abc", // apiKey is not required, just set a placeholder,
       blast: process.env.BLASTSCAN_API_KEY,
       rootstock_testnet: "abc", // apiKey is not required, just set a placeholder,
       rootstock: "abc", // apiKey is not required, just set a placeholder,
@@ -151,6 +156,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-sepolia.etherscan.io/api",
           browserURL: "https://sepolia.etherscan.io",
+        },
+      },
+      {
+        network: "arbitrum",
+        chainId: 42161,
+        urls: {
+          apiURL: "https://api.arbiscan.io/api",
+          browserURL: "https://arbiscan.io",
         },
       },
       {
