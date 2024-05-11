@@ -41,6 +41,10 @@ module.exports = {
       url: "https://1rpc.io/bnb",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    opbnb: {
+      url: "https://opbnb-rpc.publicnode.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     linea_testnet: {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -135,6 +139,7 @@ module.exports = {
       optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       polygonzkevm: process.env.POLYGONSCAN_ZKEVM_API_KEY,
       bsc: process.env.BSCSCAN_API_KEY,
+      opbnb: process.env.BSCSCAN_OPBNB_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea: process.env.LINEASCAN_API_KEY,
       blast_sepolia: "abc", // apiKey is not required, just set a placeholder,
@@ -203,6 +208,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.bscscan.com/api",
           browserURL: "https://bscscan.com",
+        },
+      },
+      {
+        network: "opbnb",
+        chainId: 204,
+        urls: {
+          apiURL: "https://api-opbnb.bscscan.com/api",
+          browserURL: "https://opbnb.bscscan.com",
         },
       },
       {
