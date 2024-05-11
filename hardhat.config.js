@@ -33,6 +33,10 @@ module.exports = {
       url: "https://optimism.drpc.org",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    polygonzkevm: {
+      url: "https://rpc.ankr.com/polygon_zkevm",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     bsc: {
       url: "https://1rpc.io/bnb",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -129,6 +133,7 @@ module.exports = {
       sepolia: process.env.ETHERSCAN_API_KEY,
       arbitrum: process.env.ARBISCAN_API_KEY,
       optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+      polygonzkevm: process.env.POLYGONSCAN_ZKEVM_API_KEY,
       bsc: process.env.BSCSCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea: process.env.LINEASCAN_API_KEY,
@@ -182,6 +187,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-optimistic.etherscan.io/api",
           browserURL: "https://optimistic.etherscan.io",
+        },
+      },
+      {
+        network: "polygonzkevm",
+        chainId: 1101,
+        urls: {
+          apiURL: "https://api-zkevm.polygonscan.com/api",
+          browserURL: "https://zkevm.polygonscan.com/",
         },
       },
       {
