@@ -25,6 +25,10 @@ module.exports = {
       url: "https://ethereum-sepolia-rpc.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    avalanche: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     arbitrum: {
       url: "https://arbitrum-one-rpc.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -135,6 +139,7 @@ module.exports = {
     apiKey: {
       ethereum: process.env.ETHERSCAN_API_KEY,
       sepolia: process.env.ETHERSCAN_API_KEY,
+      avalanche: "abc", // apiKey is not required, just set a placeholder,
       arbitrum: process.env.ARBISCAN_API_KEY,
       optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       polygonzkevm: process.env.POLYGONSCAN_ZKEVM_API_KEY,
@@ -176,6 +181,15 @@ module.exports = {
         urls: {
           apiURL: "https://api-sepolia.etherscan.io/api",
           browserURL: "https://sepolia.etherscan.io",
+        },
+      },
+      {
+        network: "avalanche",
+        chainId: 43114,
+        urls: {
+          apiURL:
+            "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan",
+          browserURL: "https://snowtrace.io",
         },
       },
       {
