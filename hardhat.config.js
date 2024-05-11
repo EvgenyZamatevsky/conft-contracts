@@ -29,6 +29,10 @@ module.exports = {
       url: "https://arbitrum-one-rpc.publicnode.com",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    optimism: {
+      url: "https://optimism.drpc.org",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     linea_testnet: {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -120,6 +124,7 @@ module.exports = {
       ethereum: process.env.ETHERSCAN_API_KEY,
       sepolia: process.env.ETHERSCAN_API_KEY,
       arbitrum: process.env.ARBISCAN_API_KEY,
+      optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
       linea: process.env.LINEASCAN_API_KEY,
       blast_sepolia: "abc", // apiKey is not required, just set a placeholder,
@@ -164,6 +169,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.arbiscan.io/api",
           browserURL: "https://arbiscan.io",
+        },
+      },
+      {
+        network: "optimism",
+        chainId: 10,
+        urls: {
+          apiURL: "https://api-optimistic.etherscan.io/api",
+          browserURL: "https://optimistic.etherscan.io",
         },
       },
       {
