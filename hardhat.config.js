@@ -45,6 +45,10 @@ module.exports = {
       url: "https://rpc.ankr.com/polygon_zkevm",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    fantom: {
+      url: "https://rpcapi.fantom.network",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     bsc: {
       url: "https://1rpc.io/bnb",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -148,6 +152,7 @@ module.exports = {
       optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       polygon: "abc", // apiKey is not required, just set a placeholder,
       polygonzkevm: process.env.POLYGONSCAN_ZKEVM_API_KEY,
+      fantom: process.env.FTMSCAN_API_KEY,
       bsc: process.env.BSCSCAN_API_KEY,
       opbnb: process.env.BSCSCAN_OPBNB_API_KEY,
       linea_testnet: process.env.LINEASCAN_API_KEY,
@@ -227,6 +232,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-zkevm.polygonscan.com/api",
           browserURL: "https://zkevm.polygonscan.com/",
+        },
+      },
+      {
+        network: "fantom",
+        chainId: 250,
+        urls: {
+          apiURL: "https://api.ftmscan.com/api",
+          browserURL: "https://ftmscan.com",
         },
       },
       {
