@@ -37,6 +37,10 @@ module.exports = {
       url: "https://optimism.drpc.org",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    polygon: {
+      url: "https://polygon.drpc.org",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     polygonzkevm: {
       url: "https://rpc.ankr.com/polygon_zkevm",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -142,6 +146,7 @@ module.exports = {
       avalanche: "abc", // apiKey is not required, just set a placeholder,
       arbitrum: process.env.ARBISCAN_API_KEY,
       optimism: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+      polygon: "abc", // apiKey is not required, just set a placeholder,
       polygonzkevm: process.env.POLYGONSCAN_ZKEVM_API_KEY,
       bsc: process.env.BSCSCAN_API_KEY,
       opbnb: process.env.BSCSCAN_OPBNB_API_KEY,
@@ -206,6 +211,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-optimistic.etherscan.io/api",
           browserURL: "https://optimistic.etherscan.io",
+        },
+      },
+      {
+        network: "polygon",
+        chainId: 137,
+        urls: {
+          apiURL: "https://polygon.blockscout.com/api",
+          browserURL: "https://polygon.blockscout.com",
         },
       },
       {
