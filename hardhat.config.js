@@ -134,6 +134,10 @@ module.exports = {
       url: "https://rpc.gobob.xyz",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    satoshivm: {
+      url: "https://alpha-rpc-node-http.svmscan.io",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     kakarot_testnet: {
       url: "https://sepolia-rpc.kakarot.org",
       accounts: [process.env.WALLET_PRIVATE_KEY],
@@ -173,6 +177,7 @@ module.exports = {
       ancient8: "abc", // apiKey is not required, just set a placeholder,
       nova: "abc", // apiKey is not required, just set a placeholder,
       bob: "abc", // apiKey is not required, just set a placeholder,
+      satoshivm: "abc", // apiKey is not required, just set a placeholder,
       kakarot_testnet: "abc", // apiKey is not required, just set a placeholder,
       bera_testnet: "abc", // apiKey is not required, just set a placeholder,
     },
@@ -405,6 +410,14 @@ module.exports = {
         urls: {
           apiURL: "https://explorer.gobob.xyz/api",
           browserURL: "https://explorer.gobob.xyz",
+        },
+      },
+      {
+        network: "satoshivm",
+        chainId: 3109,
+        urls: {
+          apiURL: "https://svmscan.io/api",
+          browserURL: "https://svmscan.io",
         },
       },
       {
