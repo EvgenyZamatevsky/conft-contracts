@@ -18,6 +18,10 @@ async function main() {
   const mint = await hre.ethers.deployContract("Mint", ["", "", "", 0, 0], {});
   await mint.waitForDeployment();
   console.log(`Mint deployed to ${mint.target}`);
+
+  const domains = await hre.ethers.deployContract("Domains", ["", "", ""], {});
+  await domains.waitForDeployment();
+  console.log(`Domains deployed to ${domains.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
