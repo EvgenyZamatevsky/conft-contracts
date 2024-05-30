@@ -88,6 +88,26 @@ module.exports = {
       url: "https://rpc.katla.taiko.xyz",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    taiko: {
+      url: "https://rpc.taiko.xyz",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    u2u: {
+      url: "https://rpc-mainnet.uniultra.xyz",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    ailayer: {
+      url: "https://mainnet-rpc.ailayer.xyz",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    zetachain: {
+      url: "https://zetachain-evm.blockpi.network/v1/rpc/public",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
+    merlin: {
+      url: "https://merlin.blockpi.network/v1/rpc/public",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     xlayer_testnet: {
       chainId: 195,
       url: "https://testrpc.xlayer.tech",
@@ -171,6 +191,11 @@ module.exports = {
       rootstock_testnet: "abc", // apiKey is not required, just set a placeholder,
       rootstock: "abc", // apiKey is not required, just set a placeholder,
       taiko_katla_testnet: "abc", // apiKey is not required, just set a placeholder,
+      taiko: "abc", // apiKey is not required, just set a placeholder,
+      u2u: "abc", // apiKey is not required, just set a placeholder,
+      ailayer: "abc", // apiKey is not required, just set a placeholder,
+      zetachain: "abc", // apiKey is not required, just set a placeholder,
+      merlin: "abc", // apiKey is not required, just set a placeholder,
       xlayer_testnet: process.env.XLAYER_API_KEY,
       xlayer: process.env.XLAYER_API_KEY,
       base_sepolia: process.env.BASESCAN_API_KEY,
@@ -325,6 +350,46 @@ module.exports = {
           apiURL:
             "https://blockscoutapi.katla.taiko.xyz/api?module=contract&action=verify",
           browserURL: "https://explorer.katla.taiko.xyz",
+        },
+      },
+      {
+        network: "taiko",
+        chainId: 167000,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/167000/etherscan/api",
+          browserURL: "https://taikoscan.network",
+        },
+      },
+      {
+        network: "u2u",
+        chainId: 39,
+        urls: {
+          apiURL: "",
+          browserURL: "https://u2uscan.xyz",
+        },
+      },
+      {
+        network: "ailayer",
+        chainId: 2649,
+        urls: {
+          apiURL: "https://mainnet-explorer.ailayer.xyz/api",
+          browserURL: "https://mainnet-explorer.ailayer.xyz",
+        },
+      },
+      {
+        network: "zetachain",
+        chainId: 7000,
+        urls: {
+          apiURL: "https://zetachain.blockscout.com/api",
+          browserURL: "https://zetachain.blockscout.com",
+        },
+      },
+      {
+        network: "merlin",
+        chainId: 4200,
+        urls: {
+          apiURL: "https://scan.merlinchain.io/api",
+          browserURL: "https://scan.merlinchain.io",
         },
       },
       {
