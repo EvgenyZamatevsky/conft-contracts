@@ -108,6 +108,10 @@ module.exports = {
       url: "https://merlin.blockpi.network/v1/rpc/public",
       accounts: [process.env.WALLET_PRIVATE_KEY],
     },
+    conflux: {
+      url: "https://evm.confluxrpc.com",
+      accounts: [process.env.WALLET_PRIVATE_KEY],
+    },
     xlayer_testnet: {
       chainId: 195,
       url: "https://testrpc.xlayer.tech",
@@ -196,6 +200,7 @@ module.exports = {
       ailayer: "abc", // apiKey is not required, just set a placeholder,
       zetachain: "abc", // apiKey is not required, just set a placeholder,
       merlin: "abc", // apiKey is not required, just set a placeholder,
+      conflux: "abc", // apiKey is not required, just set a placeholder,
       xlayer_testnet: process.env.XLAYER_API_KEY,
       xlayer: process.env.XLAYER_API_KEY,
       base_sepolia: process.env.BASESCAN_API_KEY,
@@ -356,7 +361,8 @@ module.exports = {
         network: "taiko",
         chainId: 167000,
         urls: {
-          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/167000/etherscan/api",
+          apiURL:
+            "https://api.routescan.io/v2/network/mainnet/evm/167000/etherscan/api",
           browserURL: "https://taikoscan.network",
         },
       },
@@ -390,6 +396,14 @@ module.exports = {
         urls: {
           apiURL: "https://scan.merlinchain.io/api",
           browserURL: "https://scan.merlinchain.io",
+        },
+      },
+      {
+        network: "conflux",
+        chainId: 1030,
+        urls: {
+          apiURL: "https://evmapi.confluxscan.net/api",
+          browserURL: "https://evm.confluxscan.net",
         },
       },
       {
