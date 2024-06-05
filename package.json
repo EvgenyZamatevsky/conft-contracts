@@ -1,0 +1,17 @@
+{
+  "name": "hardhat-project",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "ethlint": "^1.2.5",
+    "hardhat": "^2.19.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "scripts": {
+    "test": "npx hardhat test",
+    "check": "slither . --exclude-dependencies --filter-paths contracts/test",
+    "lint": "./node_modules/ethlint/bin/solium.js -d contracts/main --fix"
+  }
+}
